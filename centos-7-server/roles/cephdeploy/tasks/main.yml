@@ -1,0 +1,6 @@
+---
+
+- include: prep.yml
+- include: deploy.yml
+
+#- include: copyssh.yml

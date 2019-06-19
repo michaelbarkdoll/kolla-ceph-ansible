@@ -1,0 +1,52 @@
+# Directory to fetch cluster fsid, keys etc...
+fetch_directory: ~/ceph-ansible-keys
+
+# 'repository' means that you will get ceph installed through a new repository. 
+# Later below choose between 'community', 'rhcs', 'dev' or 'obs'
+ceph_origin: repository
+#valid_ceph_repository: community, rhcs, dev, uca, custom, obs
+ceph_repository: community
+ceph_stable_release: nautilus
+
+
+# monitor_interface: The interface that the Monitor nodes listen to
+monitor_interface: eth1
+#monitor_interface: enp0s8
+
+# The IP address and netmask of the Ceph public network, or the corresponding IPv6 address if using IPv6
+# !!! Required !!!
+public_network: "10.100.192.0/21"
+
+# The IP address and netmask of the Ceph cluster network
+# Required: No, defaults to public_network
+# **This will allow communication between ceph nodes via a separate network**
+#cluster_network: "10.100.192.0/21"
+
+devices:
+  - '/dev/sdb'
+  - '/dev/sdc'
+#  - '/dev/sdd'
+
+# Michael's notes:
+# By default, monitor and osd nodes are accessible by the clients.
+# However, an internal cluster communication network can be defined.
+# Simply specify the cluster network ip range with variable:
+# cluster_network: "x.x.x.x/X"
+
+dashboard_enabled: True
+dashboard_port: 8234
+dashboard_admin_user: admin
+dashboard_admin_password: admin
+# We only need this for SSL (https) connections
+#dashboard_crt: ''
+#dashboard_key: ''
+
+
+### All Red Hat Ceph Storage (RHCS) nodes require a public network. 
+### You must have a network interface card configured to a public network where 
+### Ceph clients can reach Ceph monitors and Ceph OSD nodes.
+### 
+### You might have a network interface card for a cluster network so that Ceph 
+### can conduct heart-beating, peering, replication, and recovery on a network 
+### separate from the public network.
+

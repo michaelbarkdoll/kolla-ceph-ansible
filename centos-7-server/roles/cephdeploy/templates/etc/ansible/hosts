@@ -1,0 +1,9 @@
+[mons]
+centos7ceph1
+centos7ceph2
+centos7ceph3
+
+[osds]
+centos7ceph1
+centos7ceph2
+centos7ceph3

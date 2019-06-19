@@ -1,0 +1,26 @@
+---
+
+
+- name: Add mappings to /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ item.ip }} {{ item.fqdn }} {{ item.name }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  with_items:
+    - { name: centos7ceph1, ip: 10.100.194.21, fqdn: centos7ceph1.cs.siu.edu }
+    - { name: centos7ceph2, ip: 10.100.194.22, fqdn: centos7ceph2.cs.siu.edu }
+    - { name: centos7ceph3, ip: 10.100.194.23, fqdn: centos7ceph3.cs.siu.edu }
+
+# Requires Ansible 2.8.0
+#- name: Generate sshkey pair
+#  openssh_keypair:
+#    path: ~/.ssh
+
+# gather_facts: false
+
+# Only generate on node1
+- name: Generate /etc/ssh/ RSA host key
+  command : ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: ~/.ssh/id_rsa

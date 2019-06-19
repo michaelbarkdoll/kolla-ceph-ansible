@@ -1,0 +1,79 @@
+---
+# ansible-playbook -i staging playbook.yml
+
+- hosts: cephgroup
+  become: true
+  tasks:
+    - name: Setup common role
+      include_role:
+        name: common
+        tasks_from: main
+
+
+#- hosts: cephdeploy
+#  become: true
+#  tasks:
+#    - name: Deploy Ceph
+#      include_role:
+#        name: cephdeploy
+#        tasks_from: main
+#
+
+
+#    - name: testtask
+#      package: name=nano state=present
+#
+#    - name: Setup /etc/hosts
+#      include_role:
+#        name: common
+#        tasks_from: hosts
+#
+#    - name: Copy ssh keys and authorized_keys
+#      include_role:
+#        name: common
+#        tasks_from: copyssh  
+#    
+#    - name: ntp
+#      package: name=ntp state=present
+#
+#    - name: disable chronyd
+#      systemd:
+#        name: chronyd
+#        state: stopped
+#        enabled: no
+#
+#    - name: enable ntpd
+#      systemd:
+#        name: ntpd
+#        state: started
+#        enabled: yes
+    
+#- hosts: cephdeploy
+#  become: true
+#  tasks:
+#  - name: Copy ssh keys
+#      include_role:
+#        name: cephdeploy
+#        tasks_from: copyssh
+
+
+#- hosts: cephdeploy
+#  become: true
+#  roles:
+#    - cephdeploy
+  
+
+#- hosts: cephgroup
+#  become: true
+#  tasks:
+#    - name: testtask
+#      package: name=nano state=present
+#  roles:
+#    - common
+
+#- hosts: test
+#  become: true
+#  tasks:
+#    - name: touch_file
+#      package: name=nano state=present
+

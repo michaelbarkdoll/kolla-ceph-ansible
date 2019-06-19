@@ -1,0 +1,11 @@
+---
+
+- name: Deploy ceph-ansible
+  command: ansible-playbook /root/ceph-ansible/site.yml -i /root/ceph-ansible/inventory
+  become: yes
+  args:
+    chdir: /root/ceph-ansible
+
+# Firewall information:
+# https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/installation_guide_for_red_hat_enterprise_linux/requirements-for-installing-rhcs#configuring-a-firewall-for-red-hat-ceph-storage-install
+

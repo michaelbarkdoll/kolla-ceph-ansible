@@ -1,0 +1,9 @@
+[testgroup]
+test ansible_user=vagrant
+test2 ansible_user=vagrant
+test3 ansible_user=vagrant
+#test ansible_user=cisadmin
+#test ansible_user=cisadmin
+
+[cephdeploy]
+test ansible_user=vagrant

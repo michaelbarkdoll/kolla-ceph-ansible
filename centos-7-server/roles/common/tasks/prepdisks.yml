@@ -1,0 +1,69 @@
+---
+
+#pvs: /dev/sdb, /dev/sdc, /dev/sdd, /dev/sde
+- debug:
+    msg: Test {{ inventory_hostname }} has hostname {{ ansible_hostname }}
+
+- name: Install lvm2
+  package: name=lvm2 state=present
+
+# Create OSD volume group
+- name: Create a OSDs data volume group on top of /dev/sdb with physical extent size = 32MB
+  lvg:
+    vg: vg1-data
+    pvs: /dev/sdb
+    pesize: 32
+    state: present
+
+- name: Create a data logical volume the size of all remaining space in the volume group
+  lvol:
+    vg: vg1-data
+    lv: lv1-data
+    size: 100%FREE
+
+# Create DB volume group
+    #pvs: /dev/sdb, /dev/sdc, /dev/sdd, /dev/sde
+- name: Create a DB volume group on top of /dev/sdc with physical extent size = 32MB
+  lvg:
+    vg: vg1-db
+    #vg: vg1-db
+    pvs: /dev/sdc
+    pesize: 32
+    state: present
+
+- name: Create a data logical volume the size of all remaining space in the volume group
+  lvol:
+    vg: vg1-db
+    lv: lv1-db
+    size: 100%FREE
+
+#- name: Create a data logical volume the size of all remaining space in the volume group
+#  lvol:
+#    vg: vg1-{{ ansible_hostname }}-db
+#    lv: lv1-{{ ansible_hostname }}-db
+#    size: 100%FREE
+
+# Create WAL volume group
+- name: Create a WAL volume group on top of /dev/sdd with physical extent size = 32MB
+  lvg:
+    #vg: vg1-{{ ansible_hostname }}-wal
+    vg: vg1-wal
+    pvs: /dev/sdd
+    #pvs: /dev/sdb, /dev/sdc, /dev/sdd, /dev/sde
+    pesize: 32
+    state: present
+
+
+- name: Create a data logical volume the size of all remaining space in the volume group
+  lvol:
+    vg: vg1-wal
+    lv: lv1-wal
+    size: 100%FREE
+
+
+#- name: Create a data logical volume the size of all remaining space in the volume group
+#  lvol:
+#    vg: vg1-{{ ansible_hostname }}-wal
+#    lv: lv1-{{ ansible_hostname }}-wal
+#    size: 100%FREE
+

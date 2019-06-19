@@ -1,0 +1,86 @@
+---
+
+- name: Creates directory /root/ceph-ansible-keys
+  file:
+    path: /root/ceph-ansible-keys
+    state: directory
+
+- name: Install git
+  package: name=git state=present
+
+- name: Clone ceph-ansible git repo
+  git:
+    repo: 'https://github.com/ceph/ceph-ansible.git'
+    dest: /root/ceph-ansible
+    version: stable-4.0
+
+- name: Install epel-release
+  package: name=epel-release state=present
+
+- name: Install python-pip
+  package: name=python-pip state=present
+
+- name: Install ansible
+  package: name=ansible state=present
+
+- name: Disable host key checking
+  lineinfile:
+    dest: /etc/ansible/ansible.cfg
+    regexp: '^#\s*host_key_checking.*$'
+    line: 'host_key_checking = False'
+
+- pip:
+    requirements: /root/ceph-ansible/requirements.txt
+
+#- name: Install python-netaddr
+#  package: name=python-netaddr state=present
+
+# pip:
+#   name: notario
+
+- name: Copy ansible inventory
+  template:
+    src: etc/ansible/hosts
+    dest: /etc/ansible/hosts
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Copy ansible inventory /root/ceph-ansible/inventory
+  template:
+    src: etc/ansible/hosts
+    dest: /root/ceph-ansible/inventory
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Copy ceph-ansible/site.yml.sample file on the remote machine for editing
+  copy:
+    src: /root/ceph-ansible/site.yml.sample
+    dest: /root/ceph-ansible/site.yml
+    remote_src: yes
+    #validate: /usr/sbin/visudo -cf %s
+
+- name: Copy /root/ceph-ansible/group_vars/all.yml
+  template:
+    src: ceph-ansible/group_vars/all.yml
+    dest: /root/ceph-ansible/group_vars/all.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Copy /root/ceph-ansible/group_vars/osds.yml
+  template:
+    src: ceph-ansible/group_vars/osds.yml
+    dest: /root/ceph-ansible/group_vars/osds.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+
+# ansible all -m ping -i inventory
+# ansible-playbook site.yml -i inventory

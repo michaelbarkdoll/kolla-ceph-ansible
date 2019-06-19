@@ -1,0 +1,68 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+#javapackage = ENV['java_package'] || "openjdk-8-jre"
+#javahome = ENV['java_home'] || "/usr/lib/jvm/java-8-openjdk-amd64/jre"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # Ubuntu 16.04 LTS (Xenial Xerus)
+  # config.vm.box = "ubuntu/xenial64"
+  # Ubuntu 18.04 LTS (Bionic Beaver) Server
+  config.vm.box = "ubuntu/bionic64"
+  #config.vm.box_version = "20190225.0.0"
+  # Ubuntu 18.04 LTS (Bionic Beaver) Desktop
+  #config.vm.box = "peru/ubuntu-18.04-desktop-amd64"
+  #config.vm.box_version = "20181210.01"
+  # Centos 7
+  # config.vm.box = "centos/7"
+
+  #config.vm.hostname = "centos7sp19"
+  config.vm.hostname = "ubuntusp19"
+
+  # Configure vm name (later used for ansible group)
+  #config.vm.define "centos7sp19"
+  # config.vm.define = "ubuntusp19"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  # manual ip
+  #config.vm.network "public_network", :bridge => "enxa0cec8039e98", ip: "10.100.194.21", :netmask => "255.255.248.0", auto_config: false
+  # CentOS 7 manual ip address (interface enxa0cec8039e98)
+  config.vm.network "public_network", ip: "10.100.194.22", bridge: "enxa0cec8039e98", bootproto: "static", gateway: "10.100.199.254"
+
+  config.vm.provision "shell",
+    inline: "sudo apt-get update && sudo apt install -y python"
+    #inline: "sudo yum update && sudo yum install -y python"
+    #inline: "sudo yum update"
+  
+  config.vm.provision "shell" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+      # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+    SHELL
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "playbook.yml"
+
+    #ansible.groups = {
+    #  "test" => ["centos7sp19"]
+    #}
+    ansible.groups = {
+      "test" => ["ubuntusp19"]
+    }
+
+#    ansible.extra_vars = {
+#      java_package: javapackage,
+#      java_home: javahome
+#    }
+  end
+
+end

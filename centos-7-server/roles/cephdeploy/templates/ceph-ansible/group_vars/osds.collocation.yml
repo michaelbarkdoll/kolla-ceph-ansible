@@ -1,0 +1,68 @@
+
+##############
+# CEPH OPTIONS
+##############
+
+# Devices to be used as OSDs
+# You can pre-provision disks that are not present yet.
+# Ansible will just skip them. Newly added disk will be
+# automatically configured during the next run.
+#
+
+
+
+devices:
+  - /dev/sdb
+  - /dev/sdc
+  #- /dev/sdd
+
+#'osd_auto_discovery'  mode prevents you from filling out the 'devices' variable above.
+# Device discovery is based on the Ansible fact 'ansible_devices'
+# which reports all the devices on a system. If chosen all the disks
+# found will be passed to ceph-disk. You should not be worried on using
+# this option since ceph-disk has a built-in check which looks for empty devices.
+# Thus devices with existing partition tables will not be used.
+#
+#osd_auto_discovery: false
+
+# There is no need to configure osd_scenario anymore, it defaults to lvm.
+journal_collocation: true
+
+# Use ceph-volume to create OSDs from logical volumes.
+# lvm_volumes is a list of dictionaries.
+
+
+# osd_objectstore now defaults to bluestore
+# osd_objectstore: bluestore
+
+# Bluestore: Each dictionary must contain at least data. When defining wal or
+# db, it must have both the lv name and vg group (db and wal are not required).
+# This allows for four combinations: just data, data and wal, data and wal and
+# db, data and db.
+# For example:
+# lvm_volumes:
+#   - data: data-lv1
+#     data_vg: vg1
+#     wal: wal-lv1
+#     wal_vg: vg1
+#     crush_device_class: foo
+#   - data: data-lv2
+#     db: db-lv2
+#     db_vg: vg2
+#   - data: data-lv3
+#     wal: wal-lv1
+#     wal_vg: vg3
+#     db: db-lv3
+#     db_vg: vg3
+#   - data: data-lv4
+#     data_vg: vg4
+#   - data: /dev/sda
+#   - data: /dev/sdb1
+
+#lvm_volumes: []
+#crush_device_class: ""
+
+# osds_per_device: Provision more than 1 OSD (the default if unset) per device.
+# NVMe drives should have 4
+#osds_per_device: 1
+

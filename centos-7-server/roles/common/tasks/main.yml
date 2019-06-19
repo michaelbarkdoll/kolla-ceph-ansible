@@ -1,0 +1,25 @@
+---
+
+- include: hosts.yml
+
+- name: Copy ssh keys and authorized_keys
+  include_role:
+    name: common
+    tasks_from: copyssh  
+    
+- name: Install ntp
+  package: name=ntp state=present
+
+- name: disable chronyd
+  systemd:
+    name: chronyd
+    state: stopped
+    enabled: no
+
+- name: enable ntpd
+  systemd:
+    name: ntpd
+    state: started
+    enabled: yes
+
+- include: prepdisks.yml

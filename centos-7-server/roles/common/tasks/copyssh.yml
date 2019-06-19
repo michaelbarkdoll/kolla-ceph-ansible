@@ -1,0 +1,32 @@
+---
+
+- name: Creates directory /root/.ssh
+  file:
+    path: /root/.ssh
+    state: directory
+
+- name: Copy private key
+  template:
+    src: id_rsa
+    dest: /root/.ssh/id_rsa
+    owner: root
+    group: root
+    mode: 0600
+    backup: no
+
+- name: Copy public key
+  template:
+    src: id_rsa.pub
+    dest: /root/.ssh/id_rsa.pub
+    owner: root
+    group: root
+    mode: 0600
+    backup: no
+
+- name: Set authorized key taken from file
+  authorized_key:
+    user: root
+    state: present
+    #key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+    #key: "{{ lookup('file', '/home/cisadmin/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', 'templates/id_rsa.pub') }}"
