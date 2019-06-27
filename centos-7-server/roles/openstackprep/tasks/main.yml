@@ -1,2 +1,16 @@
 - include: packages.yml
 
+- name: Copy /etc/ansible/ansible.cfg key
+  template:
+    src: etc/ansible/ansible.cfg
+    dest: /etc/ansible/ansible.cfg
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+# Deploy ssh keys to all openstack nodes for root user
+- include: generate-ssh-keys.yml
+
+# Remove the below tasks later or something else to avoid conflicts with ceph prep playbook
+- include: hosts.yml

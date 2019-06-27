@@ -1,0 +1,32 @@
+---
+
+
+# For Development
+
+- name: Git clone Kolla
+  git:
+    repo: 'https://github.com/openstack/kolla.git'
+    dest: /root/kolla
+    version: stable/stein
+
+- name: Git clone kolla-ansible
+  git:
+    repo: 'https://github.com/openstack/kolla-ansible.git'
+    dest: /root/kolla-ansible
+    version: stable/stein
+
+# Install specified python requirements in indicated (virtualenv).
+- name: Install kolla python requirements in indicated (virtualenv).
+  pip:
+    #requirements: /my_app/requirements.txt
+    requirements: /root/kolla/requirements.txt
+    #virtualenv: /my_app/venv
+    virtualenv: /root/project/virtualenv
+
+# Install specified python requirements in indicated (virtualenv).
+- name: Install kolla-ansible python requirements in indicated (virtualenv).
+  pip:
+    #requirements: /my_app/requirements.txt
+    requirements: /root/kolla-ansible/requirements.txt
+    #virtualenv: /my_app/venv
+    virtualenv: /root/project/virtualenv

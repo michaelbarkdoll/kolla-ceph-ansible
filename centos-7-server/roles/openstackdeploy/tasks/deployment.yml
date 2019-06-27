@@ -1,0 +1,125 @@
+---
+
+
+# For Deployment
+- name: Install kolla-ansible inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec pip install kolla-ansible"
+
+- name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/globals.yml
+    dest: /etc/kolla/globals.yml
+    remote_src: yes
+    force: no
+
+- name: Copy a kolla-ansible's passwords.yml file on the remote machine to /etc/kolla/passwords.yml
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/passwords.yml
+    dest: /etc/kolla/passwords.yml
+    remote_src: yes
+    force: no
+
+- name: Copy a kolla-ansible's all-in-one inventory file on the remote machine to /root/all-in-one
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/all-in-one
+    dest: /root/all-in-one
+    remote_src: yes
+    force: no
+
+- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/multinode
+    dest: /root/multinode.orig
+    remote_src: yes
+    force: no
+
+- name: Ensure kolla_base_distro is centos in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^kolla_base_distro: '
+    insertafter: '^#kolla_base_distro: "centos"'
+    line: 'kolla_base_distro: "centos"'
+
+- name: Ensure kolla_install_type is source in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^kolla_install_type: '
+    insertafter: '^#kolla_install_type: "binary"'
+    line: 'kolla_install_type: "source"'
+
+- name: Ensure openstack_release is stein in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^openstack_release: '
+    insertafter: '^#openstack_release: ""'
+    line: 'openstack_release: "stein"'
+
+- name: Ensure kolla_internal_vip_address is "10.100.194.20" in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^kolla_internal_vip_address: '
+    insertafter: '^#kolla_internal_vip_address: "10.10.10.254"'
+    line: 'kolla_internal_vip_address: "10.100.194.20"'
+
+- name: Ensure docker_registry is 10.100.194.21 in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^docker_registry: '
+    insertafter: '^#docker_registry: "172.16.0.10:4000"'
+    line: 'docker_registry: 10.100.194.21:5000'
+
+- name: Ensure network_interface is eth1 (10.100.194.21/21) in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^network_interface: '
+    insertafter: '^#network_interface: "eth0"'
+    line: 'network_interface: "eth1"'
+
+- name: Ensure neutron_external_interface is eth2 in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^neutron_external_interface: '
+    insertafter: '^#neutron_external_interface: "eth1"'
+    line: 'neutron_external_interface: "eth2"'
+
+- name: Ensure nova_compute_virt_type is qemu in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^nova_compute_virt_type: '
+    insertafter: '^#nova_compute_virt_type: "kvm"'
+    line: 'nova_compute_virt_type: "qemu"'
+
+- name: Ensure enable_cinder is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_cinder: '
+    insertafter: '^#enable_cinder: "no"'
+    line: 'enable_cinder: "yes"'
+
+- name: Ensure enable_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_ceph: '
+    insertafter: '^#enable_ceph: "no"'
+    line: 'enable_ceph: "yes"'
+
+- name: Ensure enable_ceph_rgw is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_ceph_rgw: '
+    insertafter: '^#enable_ceph_rgw: "no"'
+    line: 'enable_ceph_rgw: "yes"'
+
+- name: Ensure glance_backend_file is no in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^glance_backend_file: '
+    insertafter: '^#glance_backend_file: "yes"'
+    line: 'glance_backend_file: "no"'
+
+- name: Ensure glance_backend_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^glance_backend_ceph: '
+    insertafter: '^#glance_backend_ceph: "no"'
+    line: 'glance_backend_ceph: "yes"'

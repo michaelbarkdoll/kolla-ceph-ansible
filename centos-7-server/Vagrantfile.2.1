@@ -1,0 +1,141 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+#javapackage = ENV['java_package'] || "openjdk-8-jre"
+#javahome = ENV['java_home'] || "/usr/lib/jvm/java-8-openjdk-amd64/jre"
+
+cluster = {
+  "node1" => { :ip => "10.100.194.21", :cpus => 4, :mem => 4096 },
+  "node2" => { :ip => "10.100.194.22", :cpus => 4, :mem => 4096 }
+}
+
+cephcluster = {
+  "node3" => { :ip => "10.100.194.23", :cpus => 4, :mem => 4096 },
+  "node4" => { :ip => "10.100.194.24", :cpus => 4, :mem => 4096 },
+  "node5" => { :ip => "10.100.194.25", :cpus => 4, :mem => 4096 }
+}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  cluster.each_with_index do |(hostname, info), index|
+
+    config.vm.define hostname do |cfg|
+
+      cfg.vm.provider :virtualbox do |vb, override|
+        config.vm.box = "centos/7"
+        override.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.hostname = hostname
+        vb.name = hostname
+        
+        vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
+
+      end # end provider
+
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+      end
+
+#      cfg.vm.provision "ansible" do |ansible|
+#        ansible.compatibility_mode = "2.0"
+#        ansible.playbook = "bootstrap-nodes.yml"
+#
+#        ansible.groups = {
+#          "osgroup" => ["node[1:5]"],
+#          "cephgroup" => ["node[3:5]"],
+#          "cephdeploy" => ["node3"]
+#        }
+#      end
+
+      # ansible-playbook -i staging ceph-deploy-playbook.yml
+      # vagrant provision --provision-with ansible-ceph-deploy
+
+    end # end config
+  end # end cluster
+
+  cephcluster.each_with_index do |(hostname, info), index|
+
+    config.vm.define hostname do |cfg|
+
+      cfg.vm.provider :virtualbox do |vb, override|
+        config.vm.box = "centos/7"
+        override.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+        override.vm.hostname = hostname
+        vb.name = hostname
+        
+        vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
+        vb.customize ["storagectl", :id, "--add", "sata", "--name", "SATA" , "--portcount", 3, "--hostiocache", "on"]
+
+        if File.exists?("#{hostname}a.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}a.vdi", '--size', 10240 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}a.vdi"]
+        end
+
+        if File.exists?("#{hostname}b.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}b.vdi", '--size', 10240 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}b.vdi"]
+        end
+
+        if File.exists?("#{hostname}c.vdi")
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
+        else
+          vb.customize ['createhd', '--filename', "#{hostname}c.vdi", '--size', 10240 ]
+          vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', "./#{hostname}c.vdi"]
+        end
+
+      end # end provider
+
+      config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+        SHELL
+      end
+
+      cfg.vm.provision "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        #ansible.verbose = true
+        #ansible.playbook = "playbook.yml"
+        ansible.playbook = "bootstrap-nodes.yml"
+
+        ansible.groups = {
+          "osgroup" => ["node[1:5]"],
+          "osdeploy" => ["node1"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
+      end
+
+      # Must be run with:
+      # vagrant up && vagrant provision --provision-with ansible-ceph-deploy
+      cfg.vm.provision "ansible-ceph-deploy", run: "never", type: "ansible" do |ansible|
+      #cfg.vm.provision "ansible-ceph-deploy", type: "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        #ansible.verbose = true
+        #ansible.playbook = "playbook.yml"
+        ansible.playbook = "ceph-deploy-playbook.yml"
+
+        ansible.groups = {
+          "osgroup" => ["node[1:5]"],
+          "osdeploy" => ["node1"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
+      end
+
+      # ansible-playbook -i staging ceph-deploy-playbook.yml
+      # vagrant provision --provision-with ansible-ceph-deploy
+
+    end # end config
+  end # end cluster
+end

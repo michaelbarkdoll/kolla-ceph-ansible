@@ -1,29 +1,52 @@
 ---
 
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
 - name: Install epel-release
   package: name=epel-release state=present
 
-- name: Install python-pip
-  package: name=python-pip state=present
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
 
-- name: Install pip
-  package: name=pip state=present
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-pip
+    - python-devel
+    - libffi-devel
+    - gcc
+    - openssl-devel
+    - libselinux-python
+    - ansible
 
-- name: Install python-devel
-  package: name=python-devel state=present
-
-- name: Install libffi-devel
-  package: name=libffi-devel state=present
-
-- name: Install gcc
-  package: name=gcc state=present
-
-- name: Install openssl-devel
-  package: name=openssl-devel state=present
-
-- name: Install libselinux-python
-  package: name=libselinux-python state=present
-
-- name: Install ansible
-  package: name=ansible state=present
+#- name: Install python-pip
+#  package: name=python-pip state=present
+#
+#- name: Install pip
+#  package: name=pip state=present
+#
+#- name: Install python-devel
+#  package: name=python-devel state=present
+#
+#- name: Install libffi-devel
+#  package: name=libffi-devel state=present
+#
+#- name: Install gcc
+#  package: name=gcc state=present
+#
+#- name: Install openssl-devel
+#  package: name=openssl-devel state=present
+#
+#- name: Install libselinux-python
+#  package: name=libselinux-python state=present
+#
+#- name: Install ansible
+#  package: name=ansible state=present
 

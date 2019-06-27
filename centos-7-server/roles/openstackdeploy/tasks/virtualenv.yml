@@ -1,0 +1,61 @@
+---
+
+# Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: pip
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+
+# Install (ansible) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: ansible
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+
+- pip: 
+    name: pip,ansible
+    virtualenv: "/root/project/virtualenv"
+
+#- template: 
+#  src=venv_exec.j2 
+#  dest=/root/project/virtualenv/exec mode=755
+
+- name: Copy /root/project/virtualenv/exec
+  template:
+    src: venv_exec.j2 
+    dest: /root/project/virtualenv/exec
+    owner: root
+    group: root
+    mode: 0755
+    backup: no
+
+
+- name: Upgrade pip inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec pip install -U pip"
+
+- name: Upgrade ansible inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec pip install -U ansible"
+
+- name: Creates directory /etc/kolla
+  file:
+    path: /etc/kolla
+    owner: root
+    group: root
+    mode: '0644'
+    state: directory
+
+- include: deployment.yml
+
+# Copy multinode inventory file for kolla
+- name: Copy /root/multinode
+  template:
+    src: multinode
+    dest: /root/multinode
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+

@@ -1,0 +1,23 @@
+---
+
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-pip
+    - python-devel
+    - libffi-devel
+    - gcc
+    - openssl-devel
+    - libselinux-python
+    - ansible
+
+- name: ensure a list of deploy node packages are installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-virtualenv
+    - git
+
