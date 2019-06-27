@@ -22,4 +22,8 @@
     state: started
     enabled: yes
 
-- include: prepdisks.yml
+# Use the following line instead of no-ext-ceph-prepdisks.yml
+# when using external ceph
+#- include: prepdisks.yml
+# No external ceph, skip line above
+- include: no-ext-ceph-prepdisks.yml

@@ -46,8 +46,6 @@
     mode: '0644'
     state: directory
 
-- include: deployment.yml
-
 # Copy multinode inventory file for kolla
 - name: Copy /root/multinode
   template:

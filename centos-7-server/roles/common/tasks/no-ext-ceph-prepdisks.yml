@@ -1,0 +1,37 @@
+---
+
+- name: Create a new primary partition /dev/sdb
+  parted:
+    device: /dev/sdb
+    label: gpt
+    part_start: 0%
+    part_end: 100%
+    name: KOLLA_CEPH_OSD_BOOTSTRAP
+    number: 1
+    state: present
+
+- name: Create a new primary partition /dev/sdc
+  parted:
+    device: /dev/sdc
+    label: gpt
+    part_start: 0%
+    part_end: 100%
+    name: KOLLA_CEPH_OSD_BOOTSTRAP
+    number: 1
+    state: present
+
+- name: Create a new primary partition /dev/sdd
+  parted:
+    device: /dev/sdd
+    label: gpt
+    part_start: 0%
+    part_end: 100%
+    name: KOLLA_CEPH_OSD_BOOTSTRAP
+    number: 1
+    state: present
+
+#parted /dev/sdb -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1
+#parted /dev/sdc -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1
+#parted /dev/sdb print
+#parted /dev/sdc print
+

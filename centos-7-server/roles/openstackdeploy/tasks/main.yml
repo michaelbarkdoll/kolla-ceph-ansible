@@ -1,3 +1,8 @@
 - include: packages.yml
 - include: virtualenv.yml
 
+# Configure globals.yml
+# With external ceph
+#- include: deployment.yml
+- include: deployment-no-ext-ceph.yml
+
