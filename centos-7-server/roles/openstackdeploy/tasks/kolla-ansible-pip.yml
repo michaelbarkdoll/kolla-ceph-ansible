@@ -1,0 +1,16 @@
+---
+
+#- name: Clone kolla-ansible git repo
+#  git:
+#    repo: 'https://github.com/openstack/kolla-ansible.git'
+#    dest: /root/kolla-ansible
+#    version: stable/stein
+
+- name: Install kolla-ansible 8.0.0.0rc1
+  pip:
+    name: kolla-ansible
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    version: 8.0.0.0rc1
+    #state: latest

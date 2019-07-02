@@ -1,7 +1,8 @@
 ---
 
 # Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
-- pip:
+- name: Install latest pip inside /root/project/virtualenv
+  pip:
     name: pip
     virtualenv: /root/project/virtualenv
     virtualenv_command: virtualenv
@@ -9,7 +10,8 @@
     state: latest
 
 # Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
-- pip:
+- name: Install latest pip inside /root/target2/virtualenv
+  pip:
     name: pip
     virtualenv: /root/target2/virtualenv
     virtualenv_command: virtualenv
@@ -17,14 +19,16 @@
     state: latest
 
 # Install (ansible) into the specified (virtualenv), inheriting none of the globally installed modules
-- pip:
+- name: Install latest ansible inside /root/project/virtualenv
+  pip:
     name: ansible
     virtualenv: /root/project/virtualenv
     virtualenv_command: virtualenv
     virtualenv_site_packages: no
     state: latest
 
-- pip: 
+- name: Install latest ansible and pip inside /root/project/virtualenv
+  pip: 
     name: pip,ansible
     virtualenv: "/root/project/virtualenv"
     state: latest

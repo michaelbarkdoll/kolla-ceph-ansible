@@ -1,6 +1,12 @@
 - include: packages.yml
 - include: virtualenv.yml
 
+# Install kolla-ansible from github
+#- include: kolla-ansible-git.yml
+# Install kolla-ansible from pip
+- include: kolla-ansible-pip.yml
+
+
 # Configure globals.yml
 # With external ceph
 #- include: deployment.yml
