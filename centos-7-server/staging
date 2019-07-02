@@ -6,4 +6,23 @@ test3 ansible_user=vagrant
 #test ansible_user=cisadmin
 
 [cephdeploy]
-test ansible_user=vagrant
+#test ansible_user=vagrant
+node1 ansible_user=vagrant
+
+[osgroup]
+node1 ansible_user=vagrant
+node2 ansible_user=vagrant
+node3 ansible_user=vagrant
+node4 ansible_user=vagrant
+node5 ansible_user=vagrant
+
+[cephgroup]
+node3 ansible_user=vagrant
+node4 ansible_user=vagrant
+node5 ansible_user=vagrant
+
+[osdeploy]
+node1 ansible_user=vagrant
+
+[registry]
+registry anisble_user=vagrant

@@ -1,0 +1,73 @@
+---
+
+# Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: pip
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    state: latest
+
+# Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: pip
+    virtualenv: /root/target2/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    state: latest
+
+# Install (ansible) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: ansible
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    state: latest
+
+# Install (ansible) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: ansible
+    virtualenv: /root/target2/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    state: latest
+
+- pip: 
+    name: pip,ansible
+    virtualenv: "/root/project/virtualenv"
+    state: latest
+
+- pip: 
+    name: pip,ansible
+    virtualenv: "/root/target2/virtualenv"
+    state: latest
+
+#- template: 
+#  src=venv_exec.j2 
+#  dest=/root/project/virtualenv/exec mode=755
+
+#- name: Copy /root/project/virtualenv/exec
+#  template:
+#    src: venv_exec.j2 
+#    dest: /root/project/virtualenv/exec
+#    owner: root
+#    group: root
+#    mode: 0755
+#    backup: no
+
+
+#- name: Upgrade pip inside /root/project/virtualenv
+#  command: "/root/project/virtualenv/exec pip install -U pip"
+#
+#- name: Upgrade ansible inside /root/project/virtualenv
+#  command: "/root/project/virtualenv/exec pip install -U ansible"
+#
+#- name: Upgrade pip inside /root/project/virtualenv
+#  command: "/root/target2/virtualenv/exec pip install -U pip"
+#
+#- name: Upgrade ansible inside /root/project/virtualenv
+#  command: "/root/target2/virtualenv/exec pip install -U ansible"
+
+
+
+

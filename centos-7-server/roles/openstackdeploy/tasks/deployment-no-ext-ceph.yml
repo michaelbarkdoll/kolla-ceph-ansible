@@ -2,8 +2,18 @@
 
 
 # For Deployment
-- name: Install kolla-ansible inside /root/project/virtualenv
-  command: "/root/project/virtualenv/exec pip install kolla-ansible"
+#- name: Install kolla-ansible inside /root/project/virtualenv
+#  command: "/root/project/virtualenv/exec pip install kolla-ansible"
+
+- name: Install kolla-ansible 8.0.0.0rc1
+  pip:
+    name: kolla-ansible
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    version: 8.0.0.0rc1
+    #state: latest
+
 
 - name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
   copy:
@@ -66,7 +76,7 @@
     path: /etc/kolla/globals.yml
     regexp: '^docker_registry: '
     insertafter: '^#docker_registry: "172.16.0.10:4000"'
-    line: 'docker_registry: 10.100.194.21:5000'
+    line: 'docker_registry: 10.100.194.21:4000'
 
 - name: Ensure network_interface is eth1 (10.100.194.21/21) in /etc/kolla/globals.yml
   lineinfile:
@@ -96,30 +106,30 @@
     insertafter: '^#enable_cinder: "no"'
     line: 'enable_cinder: "yes"'
 
-#- name: Ensure enable_ceph is yes in /etc/kolla/globals.yml
-#  lineinfile:
-#    path: /etc/kolla/globals.yml
-#    regexp: '^enable_ceph: '
-#    insertafter: '^#enable_ceph: "no"'
-#    line: 'enable_ceph: "yes"'
-#
-#- name: Ensure enable_ceph_rgw is yes in /etc/kolla/globals.yml
-#  lineinfile:
-#    path: /etc/kolla/globals.yml
-#    regexp: '^enable_ceph_rgw: '
-#    insertafter: '^#enable_ceph_rgw: "no"'
-#    line: 'enable_ceph_rgw: "yes"'
-#
-#- name: Ensure glance_backend_file is no in /etc/kolla/globals.yml
-#  lineinfile:
-#    path: /etc/kolla/globals.yml
-#    regexp: '^glance_backend_file: '
-#    insertafter: '^#glance_backend_file: "yes"'
-#    line: 'glance_backend_file: "no"'
-#
-#- name: Ensure glance_backend_ceph is yes in /etc/kolla/globals.yml
-#  lineinfile:
-#    path: /etc/kolla/globals.yml
-#    regexp: '^glance_backend_ceph: '
-#    insertafter: '^#glance_backend_ceph: "no"'
-#    line: 'glance_backend_ceph: "yes"'
+- name: Ensure enable_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_ceph: '
+    insertafter: '^#enable_ceph: "no"'
+    line: 'enable_ceph: "yes"'
+
+- name: Ensure enable_ceph_rgw is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_ceph_rgw: '
+    insertafter: '^#enable_ceph_rgw: "no"'
+    line: 'enable_ceph_rgw: "yes"'
+
+- name: Ensure glance_backend_file is no in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^glance_backend_file: '
+    insertafter: '^#glance_backend_file: "yes"'
+    line: 'glance_backend_file: "no"'
+
+- name: Ensure glance_backend_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^glance_backend_ceph: '
+    insertafter: '^#glance_backend_ceph: "no"'
+    line: 'glance_backend_ceph: "yes"'

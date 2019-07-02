@@ -25,6 +25,7 @@
     - openssl-devel
     - libselinux-python
     - ansible
+    - python-virtualenv
 
 #- name: Install python-pip
 #  package: name=python-pip state=present

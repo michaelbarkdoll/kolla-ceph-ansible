@@ -7,7 +7,7 @@ vagrant up
 vagrant provision --provision-with ansible-ceph-prep
 # ansible-playbook -i staging ceph-bootstrap-nodes.yml
 
-# Deploy Ceph 
+# Deploy External Ceph 
 # ansible-playbook -i staging ceph-deploy-playbook.yml
 # vagrant provision --provision-with ansible-ceph-deploy
 
@@ -18,6 +18,23 @@ vagrant provision --provision-with ansible
 # Deploy OpenStack os-bootstrap-deploy-nodes.yml
 vagrant provision --provision-with ansible-os-deploy
 # ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
+```
+
+```
+vagrant up && vagrant provision --provision-with ansible-ceph-prep && vagrant provision --provision-with ansible
+```
+
+```
+vagrant up && ansible-playbook -i staging ceph-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
+```
+
+All-in-one
+```
+vagrant up && ansible-playbook -i staging ceph-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
+```
+
+```
+vagrant provision --provision-with ansible-ceph-prep && vagrant provision --provision-with ansible && vagrant provision --provision-with ansible-os-deploy
 ```
 
 # Destroy the vagrant cluster

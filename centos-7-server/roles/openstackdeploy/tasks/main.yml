@@ -6,3 +6,65 @@
 #- include: deployment.yml
 - include: deployment-no-ext-ceph.yml
 
+- name: kolla-ansible bootstrap-servers inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode bootstrap-servers"
+- include: registry.yml
+- name: kolla-genpwd inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-genpwd"
+- name: kolla-ansible prechecks inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode prechecks"
+- name: kolla-ansible pull inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode pull"
+- name: kolla-ansible deploy inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode deploy"
+
+
+
+#### kolla-ansible -e virtualenv=/root/target2 -i /root/multinode bootstrap-servers
+######- name: kolla-ansible bootstrap-servers inside /root/project/virtualenv
+###  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -i /root/multinode bootstrap-servers"
+###
+######  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode bootstrap-servers"
+#  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -e ansible_python_interpreter=/root/target2/virtualenv/bin/python -i /root/multinode bootstrap-servers"
+
+# Check import docker works
+# "/usr/bin/python", "-c", "import docker; print docker.__version__"
+# /usr/bin/python -c "import docker; print docker.__version__"
+# vagrant ssh -c 'sudo pip install docker' node[1:5]
+
+######- include: registry.yml
+
+###
+#### kolla-genpwd
+######- name: kolla-genpwd inside /root/project/virtualenv
+######  command: "/root/project/virtualenv/exec kolla-genpwd"
+###
+#### prechecks
+#### kolla-ansible -e ansible_python_interpreter=/root/target2/bin/python -i /root/multinode prechecks
+######- name: kolla-ansible prechecks inside /root/project/virtualenv
+###  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -i /root/multinode prechecks"
+######  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -e ansible_python_interpreter=/root/target2/virtualenv/bin/python -i /root/multinode prechecks"
+###
+####kolla-ansible -e ansible_python_interpreter=/root/target2/bin/python -i /root/multinode pull
+######- name: kolla-ansible pull inside /root/project/virtualenv
+###  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -e ansible_python_interpreter=/root/target2/virtualenv/bin/python -i /root/multinode pull"
+######  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -i /root/multinode pull"
+###
+####kolla-ansible -e ansible_python_interpreter=/root/target2/bin/python -i /root/multinode deploy
+###- name: kolla-ansible deploy inside /root/project/virtualenv
+###  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -e ansible_python_interpreter=/root/target2/virtualenv/bin/python -i /root/multinode deploy"
+###  command: "/root/project/virtualenv/exec kolla-ansible -e virtualenv=/root/target2 -i /root/multinode deploy"
+###
+
+# pip install docker
+# pip install docker-py
+# pip list
+# Run external registry
+###- name: Start a registry container with a command
+###  docker_container:
+###    name: registry
+###    image: registry:2
+###    published_ports: 5000:5000
+###    volumes: registry:/var/lib/registry
+###    env:
+###        REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"

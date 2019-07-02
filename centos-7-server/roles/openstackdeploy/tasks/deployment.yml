@@ -2,8 +2,17 @@
 
 
 # For Deployment
-- name: Install kolla-ansible inside /root/project/virtualenv
-  command: "/root/project/virtualenv/exec pip install kolla-ansible"
+#- name: Install kolla-ansible inside /root/project/virtualenv
+#  command: "/root/project/virtualenv/exec pip install kolla-ansible"
+
+- name: Install kolla-ansible 8.0.0.0rc1
+  pip:
+    name: kolla-ansible
+    virtualenv: /root/project/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    version: 8.0.0.0rc1
+    #state: latest
 
 - name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
   copy:

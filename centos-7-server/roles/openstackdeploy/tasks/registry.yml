@@ -1,0 +1,43 @@
+---
+
+# Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
+- name: Install pip into registry virtualenv
+  pip:
+    name: pip
+    virtualenv: /root/registry/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+
+- pip: 
+    name: pip
+    virtualenv: "/root/registry/virtualenv"
+
+# ./kolla-ansible -e ansible_python_interpreter=/root/project/virtualenv/bin/python -i /root/multinode prechecks
+
+- name: Copy /root/registry/virtualenv/exec
+  template:
+    src: venv_docker_exec.j2 
+    dest: /root/registry/virtualenv/exec
+    owner: root
+    group: root
+    mode: 0755
+    backup: no
+
+- name: Upgrade pip inside /root/registry/virtualenv
+  command: "/root/registry/virtualenv/exec pip install -U pip"
+
+- name: Install docker-py inside /root/registry/virtualenv
+  command: "/root/registry/virtualenv/exec pip install docker-py"
+
+- name: Run docker registry inside /root/registry/virtualenv
+  command: "/root/registry/virtualenv/exec docker run -d --name registry --restart=always -p 4000:5000 -v registry:/var/lib/registry -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io registry:2"
+
+
+#- name: Start a registry container with a command
+#  docker_container:
+#    name: registry
+#    image: registry:2
+#    published_ports: 5000:5000
+#    volumes: registry:/var/lib/registry
+#    env:
+#        REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"

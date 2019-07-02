@@ -14,3 +14,4 @@
 
 # Remove the below tasks later or something else to avoid conflicts with ceph prep playbook
 - include: hosts.yml
+- include: virtualenv.yml

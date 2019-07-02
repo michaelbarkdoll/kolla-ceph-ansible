@@ -7,38 +7,74 @@ VAGRANTFILE_API_VERSION = "2"
 #javahome = ENV['java_home'] || "/usr/lib/jvm/java-8-openjdk-amd64/jre"
 
 cluster = {
-  "node1" => { :ip => "10.100.194.21", :privateip => "192.168.0.1", :cpus => 4, :mem => 4096 },
-  "node2" => { :ip => "10.100.194.22", :privateip => "192.168.0.2", :cpus => 4, :mem => 4096 },
-  "node3" => { :ip => "10.100.194.23", :privateip => "192.168.0.3", :cpus => 4, :mem => 4096 },
-  "node4" => { :ip => "10.100.194.24", :privateip => "192.168.0.4", :cpus => 4, :mem => 4096 },
-  "node5" => { :ip => "10.100.194.25", :privateip => "192.168.0.5", :cpus => 4, :mem => 4096 }
+  "node1" => { :ip => "10.100.194.21", :privateip => "192.168.0.1", :cpus => 12, :mem => 12384 },
+  "node2" => { :ip => "10.100.194.22", :privateip => "192.168.0.2", :cpus => 12, :mem => 12384 },
+  "node3" => { :ip => "10.100.194.23", :privateip => "192.168.0.3", :cpus => 12, :mem => 12384 },
+  "node4" => { :ip => "10.100.194.24", :privateip => "192.168.0.4", :cpus => 12, :mem => 12384 },
+  "node5" => { :ip => "10.100.194.25", :privateip => "192.168.0.5", :cpus => 12, :mem => 12384 }
+}
+
+registry = {
+  "registry" => { :ip => "10.100.194.19", :privateip => "192.168.0.200", :cpus => 1, :mem => 2048 }
 }
 
 cephcluster = {
-  "node3" => { :ip => "10.100.194.23", :cpus => 4, :mem => 4096 },
-  "node4" => { :ip => "10.100.194.24", :cpus => 4, :mem => 4096 },
-  "node5" => { :ip => "10.100.194.25", :cpus => 4, :mem => 4096 }
+  "node3" => { :ip => "10.100.194.23", :cpus => 12, :mem => 12384 },
+  "node4" => { :ip => "10.100.194.24", :cpus => 12, :mem => 12384 },
+  "node5" => { :ip => "10.100.194.25", :cpus => 12, :mem => 12384 }
 }
 
 cephdeploy = {
-  "node3" => { :ip => "10.100.194.23", :cpus => 4, :mem => 4096 }
+  "node3" => { :ip => "10.100.194.23", :cpus => 12, :mem => 12384 }
 }
 
 osdeploy = {
-  "node1" => { :ip => "10.100.194.21", :cpus => 4, :mem => 4096 }
+  "node1" => { :ip => "10.100.194.21", :cpus => 12, :mem => 12384 }
 }
 
 oscluster = {
-  "node1" => { :ip => "10.100.194.21", :cpus => 4, :mem => 4096 },
-  "node2" => { :ip => "10.100.194.22", :cpus => 4, :mem => 4096 },
-  "node3" => { :ip => "10.100.194.23", :cpus => 4, :mem => 4096 },
-  "node4" => { :ip => "10.100.194.24", :cpus => 4, :mem => 4096 },
-  "node5" => { :ip => "10.100.194.25", :cpus => 4, :mem => 4096 }
+  "node1" => { :ip => "10.100.194.21", :cpus => 12, :mem => 12384 },
+  "node2" => { :ip => "10.100.194.22", :cpus => 12, :mem => 12384 },
+  "node3" => { :ip => "10.100.194.23", :cpus => 12, :mem => 12384 },
+  "node4" => { :ip => "10.100.194.24", :cpus => 12, :mem => 12384 },
+  "node5" => { :ip => "10.100.194.25", :cpus => 12, :mem => 12384 }
 }
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   #config.vm.network :private_network, ip: "#{info[:privateip]}", auto_config: false
+
+#  registry.each_with_index do |(hostname, info), index|
+#    config.vm.define hostname do |cfg|
+#      puts <<-EOT
+#      #{info[:ip]}
+#      EOT
+#      cfg.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+#      cfg.vm.network :private_network, ip: "#{info[:privateip]}", virtualbox__intnet: true
+#      #cfg.vm.network :private_network, ip: "#{info[:privateip]}", virtualbox__intnet: true, auto_config: false
+#
+#      cfg.vm.provider :virtualbox do |vb, override|
+#        config.vm.box = "centos/7"
+#
+#        #override.vm.network :public_network, ip: "#{info[:ip]}", netmask: "255.255.248.0", bridge: "en0", bootproto: "static", gateway: "10.100.199.254"
+#
+#        override.vm.hostname = hostname
+#        vb.name = hostname
+#        
+#        vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
+#
+#      end # end provider
+#
+#      config.vm.provision "shell" do |s|
+#        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+#        s.inline = <<-SHELL
+#          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+#          # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+#        SHELL
+#      end
+#      
+#    end # end config
+#  end # end registry
 
   cluster.each_with_index do |(hostname, info), index|
     puts <<-EOT

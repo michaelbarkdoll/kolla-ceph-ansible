@@ -4,7 +4,7 @@
 
 - name: Copy ssh keys and authorized_keys
   include_role:
-    name: common
+    name: cephprep
     tasks_from: copyssh  
     
 - name: Install ntp

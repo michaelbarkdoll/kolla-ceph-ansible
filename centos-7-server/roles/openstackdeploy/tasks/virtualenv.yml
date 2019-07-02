@@ -6,6 +6,15 @@
     virtualenv: /root/project/virtualenv
     virtualenv_command: virtualenv
     virtualenv_site_packages: no
+    state: latest
+
+# Install (pip) into the specified (virtualenv), inheriting none of the globally installed modules
+- pip:
+    name: pip
+    virtualenv: /root/target2/virtualenv
+    virtualenv_command: virtualenv
+    virtualenv_site_packages: no
+    state: latest
 
 # Install (ansible) into the specified (virtualenv), inheriting none of the globally installed modules
 - pip:
@@ -13,10 +22,12 @@
     virtualenv: /root/project/virtualenv
     virtualenv_command: virtualenv
     virtualenv_site_packages: no
+    state: latest
 
 - pip: 
     name: pip,ansible
     virtualenv: "/root/project/virtualenv"
+    state: latest
 
 #- template: 
 #  src=venv_exec.j2 

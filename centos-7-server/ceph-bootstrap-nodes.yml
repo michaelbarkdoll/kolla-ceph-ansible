@@ -4,9 +4,9 @@
   strategy: free
   become: true
   tasks:
-    - name: Setup common role
+    - name: Setup cephprep role
       include_role:
-        name: common
+        name: cephprep
         tasks_from: main
 
 # vagrant up
