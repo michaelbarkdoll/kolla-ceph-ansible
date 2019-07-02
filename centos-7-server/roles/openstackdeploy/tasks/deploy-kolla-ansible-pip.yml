@@ -1,0 +1,13 @@
+---
+
+- name: kolla-ansible bootstrap-servers inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode bootstrap-servers"
+- include: registry.yml
+- name: kolla-genpwd inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-genpwd"
+- name: kolla-ansible prechecks inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode prechecks"
+- name: kolla-ansible pull inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode pull"
+- name: kolla-ansible deploy inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode deploy"
