@@ -14,3 +14,28 @@
     virtualenv_site_packages: no
     version: 8.0.0.0rc1
     #state: latest
+
+- name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/globals.yml
+    dest: /etc/kolla/globals.yml
+    remote_src: yes
+    force: no
+- name: Copy a kolla-ansible's passwords.yml file on the remote machine to /etc/kolla/passwords.yml
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/passwords.yml
+    dest: /etc/kolla/passwords.yml
+    remote_src: yes
+    force: no
+- name: Copy a kolla-ansible's all-in-one inventory file on the remote machine to /root/all-in-one
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/all-in-one
+    dest: /root/all-in-one
+    remote_src: yes
+    force: no
+- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode
+  copy:
+    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/multinode
+    dest: /root/multinode.orig
+    remote_src: yes
+    force: no
