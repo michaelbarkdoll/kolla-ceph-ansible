@@ -1,7 +1,5 @@
 ---
 
-kolla-ansible-source: True
-#kolla-ansible-source: False
+kolla_ansible_source: True
+#kolla_ansible_source: False
 
-# Obtain external_ceph variable
-- include: ../../cephprep/defaults/main.yml

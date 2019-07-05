@@ -65,7 +65,25 @@
     remote_src: yes
     #validate: /usr/sbin/visudo -cf %s
 
-- name: Copy /root/ceph-ansible/group_vars/all.yml
+#- name: Copy /root/ceph-ansible/group_vars/all.yml
+#  template:
+#    src: ceph-ansible/group_vars/all.yml
+#    dest: /root/ceph-ansible/group_vars/all.yml
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no
+
+#- name: Copy /root/ceph-ansible/group_vars/osds.yml
+#  template:
+#    src: ceph-ansible/group_vars/osds.yml
+#    dest: /root/ceph-ansible/group_vars/osds.yml
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no
+
+- name: Copy /root/ceph-ansible/group_vars/all.yml external_ceph is true
   template:
     src: ceph-ansible/group_vars/all.yml
     dest: /root/ceph-ansible/group_vars/all.yml
@@ -73,8 +91,19 @@
     group: root
     mode: 0644
     backup: no
+  when: external_ceph | bool
 
-- name: Copy /root/ceph-ansible/group_vars/osds.yml
+- name: Copy /root/ceph-ansible/group_vars/all.yml external_ceph is false
+  template:
+    src: ceph-ansible/group_vars/all.collocation.yml
+    dest: /root/ceph-ansible/group_vars/all.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+  when: not external_ceph | bool
+
+- name: Copy /root/ceph-ansible/group_vars/osds.yml external_ceph is true
   template:
     src: ceph-ansible/group_vars/osds.yml
     dest: /root/ceph-ansible/group_vars/osds.yml
@@ -82,7 +111,17 @@
     group: root
     mode: 0644
     backup: no
+  when: external_ceph | bool
 
+- name: Copy /root/ceph-ansible/group_vars/osds.yml external_ceph is false
+  template:
+    src: ceph-ansible/group_vars/osds.collocation.yml
+    dest: /root/ceph-ansible/group_vars/osds.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+  when: not external_ceph | bool
 
 # ansible all -m ping -i inventory
 # ansible-playbook site.yml -i inventory

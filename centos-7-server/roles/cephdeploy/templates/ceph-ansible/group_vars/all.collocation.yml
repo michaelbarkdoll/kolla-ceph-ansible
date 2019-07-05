@@ -25,7 +25,7 @@ public_network: "10.100.192.0/21"
 devices:
   - '/dev/sdb'
   - '/dev/sdc'
-#  - '/dev/sdd'
+  - '/dev/sdd'
 
 # Michael's notes:
 # By default, monitor and osd nodes are accessible by the clients.

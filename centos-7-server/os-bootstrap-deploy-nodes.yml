@@ -8,6 +8,9 @@
       include_role:
         name: openstackdeploy
         tasks_from: main
+      vars:
+        external_ceph: False
+        kolla_ansible_source: True
 
 # vagrant up
 # vagrant provision --provision-with ansible-ceph-deploy

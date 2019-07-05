@@ -5,11 +5,11 @@
 
 - name: Install kolla-ansible from github
   include: kolla-ansible-git.yml
-  when: kolla-ansible-source | bool
+  when: kolla_ansible_source | bool
 
 - name: Install kolla-ansible from pip
   include: kolla-ansible-pip.yml
-  when: not kolla-ansible-source | bool
+  when: not kolla_ansible_source | bool
 
 
 #- name: Configure /etc/kolla/globals.yml 
