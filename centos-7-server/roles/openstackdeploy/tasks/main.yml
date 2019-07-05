@@ -1,18 +1,25 @@
 - include: packages.yml
 - include: virtualenv.yml
 
-# Install kolla-ansible from github
-- include: kolla-ansible-git.yml
-# Install kolla-ansible from pip
-#- include: kolla-ansible-pip.yml
+- include: install-inventory.yml
 
+- name: Install kolla-ansible from github
+  include: kolla-ansible-git.yml
+  when: kolla-ansible-source | bool
+
+- name: Install kolla-ansible from pip
+  include: kolla-ansible-pip.yml
+  when: not kolla-ansible-source | bool
+
+
+#- name: Configure /etc/kolla/globals.yml 
 
 # Configure globals.yml
 # With external ceph
 #- include: deployment.yml
 - include: deployment-no-ext-ceph.yml
 
-
+# Bootstrap, start registry, genpwd, prechecks, deploy
 - include: deploy-kolla-ansible-git.yml
 #- include: deploy-kolla-ansible-pip.yml
 

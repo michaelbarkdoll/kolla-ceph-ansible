@@ -6,9 +6,9 @@
 ####test ansible_user=cisadmin
 ###
 
-#[all:children]
-#cephdeploy
-#cephgroup
+[all:children]
+cephdeploy
+cephgroup
 
 [cephdeploy]
 #test ansible_user=vagrant
@@ -29,26 +29,6 @@ node5 ansible_user=vagrant nic1=10.100.194.25
 [osdeploy]
 node1 ansible_user=vagrant nic1=10.100.194.21
 
-#[registry]
-#registry anisble_user=vagrant nic1=10.100.194.19
-
-# example:
-[osnodes]
-node1 ansible_user=vagrant nic1=10.100.194.21
-node2 ansible_user=vagrant nic1=10.100.194.22
-node3 ansible_user=vagrant nic1=10.100.194.23
-
-[cephnodes]
-node4 ansible_user=vagrant nic1=10.100.194.24
-node5 ansible_user=vagrant nic1=10.100.194.25
-#node6 ansible_user=vagrant nic1=10.100.194.26
-
-[boat:children]
-osnodes
-cephnodes
-#registry
-
-[boat:vars]
-ansible_user=vagrant
-
+[registry]
+registry anisble_user=vagrant nic1=10.100.194.19
 

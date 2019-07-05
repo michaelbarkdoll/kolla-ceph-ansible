@@ -21,19 +21,22 @@
     dest: /etc/kolla/globals.yml
     remote_src: yes
     force: no
+
 - name: Copy a kolla-ansible's passwords.yml file on the remote machine to /etc/kolla/passwords.yml
   copy:
     src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/passwords.yml
     dest: /etc/kolla/passwords.yml
     remote_src: yes
     force: no
+
 - name: Copy a kolla-ansible's all-in-one inventory file on the remote machine to /root/all-in-one
   copy:
     src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/all-in-one
     dest: /root/all-in-one
     remote_src: yes
     force: no
-- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode
+
+- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode.orig
   copy:
     src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/multinode
     dest: /root/multinode.orig

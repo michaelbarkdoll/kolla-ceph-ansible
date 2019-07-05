@@ -1,3 +1,11 @@
+---
+
+# Deploy ssh keys to all openstack nodes for root user
+- include: install-ssh-keys.yml
+
+# Update /etc/hosts from inventory file / Vagrantfile
+- include: hosts.yml
+
 - include: packages.yml
 
 - name: Copy /etc/ansible/ansible.cfg key
@@ -9,9 +17,5 @@
     mode: 0644
     backup: no
 
-# Deploy ssh keys to all openstack nodes for root user
-#- include: generate-ssh-keys.yml
-
-# Remove the below tasks later or something else to avoid conflicts with ceph prep playbook
-#- include: skip_hosts.yml
 - include: virtualenv.yml
+

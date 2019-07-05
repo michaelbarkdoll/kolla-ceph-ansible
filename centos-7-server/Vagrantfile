@@ -236,6 +236,49 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end # end config
   end # end cluster
 
+  oscluster.each_with_index do |(hostname, info), index|
+
+    config.vm.define hostname do |cfg|
+
+      # ansible-playbook -i staging os-bootstrap-nodes.yml
+      # vagrant provision --provision-with ansible
+
+      cfg.vm.provision "bootstrap", run: "never", type: "ansible" do |ansible|
+      #cfg.vm.provision "ansible" do |ansible|
+        ansible.compatibility_mode = "2.0"
+        #ansible.verbose = true
+        #ansible.playbook = "playbook.yml"
+        
+        ansible.playbook = "bootstrap-nodes.yml"
+
+        ansible.host_vars = {
+        "node1" => {"ip" => "10.100.194.21",
+                    "privateip" => "192.168.0.1",
+                    "nic1" => "10.100.194.21"},
+        "node2" => {"ip" => "10.100.194.22",
+                    "privateip" => "192.168.0.2",
+                    "nic1" => "10.100.194.22"},
+        "node3" => {"ip" => "10.100.194.23",
+                    "privateip" => "192.168.0.3",
+                    "nic1" => "10.100.194.23"},
+        "node4" => {"ip" => "10.100.194.24",
+                    "privateip" => "192.168.0.4",
+                    "nic1" => "10.100.194.24"},
+        "node5" => {"ip" => "10.100.194.25",
+                    "privateip" => "192.168.0.5",
+                    "nic1" => "10.100.194.25"}
+        }
+        ansible.groups = {
+          "all" => ["node1:5"],
+          "osgroup" => ["node[1:5]"],
+          "osdeploy" => ["node1"],
+          "cephgroup" => ["node[3:5]"],
+          "cephdeploy" => ["node3"]
+        }
+      end
+
+    end # end config
+  end # end cluster
 
   osdeploy.each_with_index do |(hostname, info), index|
 

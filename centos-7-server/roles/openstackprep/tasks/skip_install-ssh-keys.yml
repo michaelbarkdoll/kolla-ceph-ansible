@@ -7,7 +7,7 @@
 
 - name: Copy private key
   template:
-    src: id_rsa
+    src: root/.ssh/id_rsa
     dest: /root/.ssh/id_rsa
     owner: root
     group: root
@@ -16,7 +16,7 @@
 
 - name: Copy public key
   template:
-    src: id_rsa.pub
+    src: root/.ssh/id_rsa.pub
     dest: /root/.ssh/id_rsa.pub
     owner: root
     group: root
@@ -29,4 +29,5 @@
     state: present
     #key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
     #key: "{{ lookup('file', '/home/cisadmin/.ssh/id_rsa.pub') }}"
-    key: "{{ lookup('file', 'templates/id_rsa.pub') }}"
+    #key: "{{ lookup('file', 'templates/id_rsa.pub') }}"
+    key: "{{ lookup('file', 'templates/root/.ssh/id_rsa.pub') }}"

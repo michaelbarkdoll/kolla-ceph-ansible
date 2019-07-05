@@ -1,9 +1,9 @@
 [mons]
-centos7ceph1
-centos7ceph2
-centos7ceph3
+node3
+node4
+node5
 
 [osds]
-centos7ceph1
-centos7ceph2
-centos7ceph3
+node3
+node4
+node5

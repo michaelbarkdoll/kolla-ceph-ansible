@@ -1,8 +1,8 @@
 ---
 
 #pvs: /dev/sdb, /dev/sdc, /dev/sdd, /dev/sde
-- debug:
-    msg: Test {{ inventory_hostname }} has hostname {{ ansible_hostname }}
+#- debug:
+#    msg: Test {{ inventory_hostname }} has hostname {{ ansible_hostname }}
 
 - name: Install lvm2
   package: name=lvm2 state=present

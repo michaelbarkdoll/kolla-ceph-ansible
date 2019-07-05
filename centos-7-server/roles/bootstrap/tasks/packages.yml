@@ -1,0 +1,28 @@
+---
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: Install epel-release
+  package: name=epel-release state=present
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-pip
+    - python-devel
+    - libffi-devel
+    - gcc
+    - openssl-devel
+    - libselinux-python
+    - ansible
+    - python-virtualenv

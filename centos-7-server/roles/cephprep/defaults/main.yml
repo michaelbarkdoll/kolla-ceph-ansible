@@ -1,0 +1,4 @@
+---
+
+#external_ceph: True
+external_ceph: False

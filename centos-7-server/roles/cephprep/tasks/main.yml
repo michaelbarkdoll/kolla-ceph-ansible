@@ -1,12 +1,5 @@
 ---
 
-- include: hosts.yml
-
-- name: Copy ssh keys and authorized_keys
-  include_role:
-    name: cephprep
-    tasks_from: copyssh  
-    
 - name: Install ntp
   package: name=ntp state=present
 
@@ -22,8 +15,15 @@
     state: started
     enabled: yes
 
-# Use the following line instead of no-ext-ceph-prepdisks.yml
-# when using external ceph
+- name: Configure hard disks for external_ceph
+  include: prepdisks.yml
+  when: external_ceph | bool
+
+- name: Configure hard disks for internal ceph
+  include: no-ext-ceph-prepdisks.yml
+  when: not external_ceph | bool
+
+# External Ceph
 #- include: prepdisks.yml
-# No external ceph, skip line above
-- include: no-ext-ceph-prepdisks.yml
+# No external Ceph, skip line above
+#- include: no-ext-ceph-prepdisks.yml

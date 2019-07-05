@@ -61,14 +61,5 @@
     mode: '0644'
     state: directory
 
-# Copy multinode inventory file for kolla
-- name: Copy /root/multinode
-  template:
-    src: multinode
-    dest: /root/multinode
-    owner: root
-    group: root
-    mode: 0644
-    backup: no
 
 

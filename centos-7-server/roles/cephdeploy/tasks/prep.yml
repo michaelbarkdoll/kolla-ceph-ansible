@@ -38,6 +38,8 @@
 # pip:
 #   name: notario
 
+
+# This template must be modified according to ceph nodes
 - name: Copy ansible inventory
   template:
     src: etc/ansible/hosts
