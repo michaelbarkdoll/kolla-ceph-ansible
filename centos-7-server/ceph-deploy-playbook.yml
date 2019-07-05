@@ -1,5 +1,6 @@
 ---
 
+# This playbook only needs to run if ceph is external!!!
 - hosts: cephdeploy
   become: true
   tasks:
@@ -7,8 +8,8 @@
       include_role:
         name: cephdeploy
         tasks_from: main
-      vars:
-        external_ceph: False
+      #vars:
+      #  external_ceph: False
         #kolla_ansible_source: True
 
 

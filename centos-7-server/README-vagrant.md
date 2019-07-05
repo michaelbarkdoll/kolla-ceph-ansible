@@ -12,7 +12,7 @@ ansible-playbook -i staging bootstrap-nodes.yml
 # vagrant provision --provision-with ansible-ceph-prep
 ansible-playbook -i staging ceph-bootstrap-nodes.yml
 
-# Deploy External Ceph 
+# Deploy External Ceph (optionally, skip if internal ceph)
 # vagrant provision --provision-with ansible-ceph-deploy
 ansible-playbook -i staging ceph-deploy-playbook.yml
 

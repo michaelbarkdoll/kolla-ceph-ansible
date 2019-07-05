@@ -91,19 +91,19 @@
     group: root
     mode: 0644
     backup: no
-  when: external_ceph | bool
+  #when: external_ceph | bool
 
-- name: Copy /root/ceph-ansible/group_vars/all.yml external_ceph is false
-  template:
-    src: ceph-ansible/group_vars/all.collocation.yml
-    dest: /root/ceph-ansible/group_vars/all.yml
-    owner: root
-    group: root
-    mode: 0644
-    backup: no
-  when: not external_ceph | bool
+#- name: Copy /root/ceph-ansible/group_vars/all.yml external_ceph is false
+#  template:
+#    src: ceph-ansible/group_vars/all.collocation.yml
+#    dest: /root/ceph-ansible/group_vars/all.yml
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no
+#  when: not external_ceph | bool
 
-- name: Copy /root/ceph-ansible/group_vars/osds.yml external_ceph is true
+- name: Copy /root/ceph-ansible/group_vars/osds.yml
   template:
     src: ceph-ansible/group_vars/osds.yml
     dest: /root/ceph-ansible/group_vars/osds.yml
@@ -111,17 +111,17 @@
     group: root
     mode: 0644
     backup: no
-  when: external_ceph | bool
+  #when: external_ceph | bool
 
-- name: Copy /root/ceph-ansible/group_vars/osds.yml external_ceph is false
-  template:
-    src: ceph-ansible/group_vars/osds.collocation.yml
-    dest: /root/ceph-ansible/group_vars/osds.yml
-    owner: root
-    group: root
-    mode: 0644
-    backup: no
-  when: not external_ceph | bool
+#- name: Copy /root/ceph-ansible/group_vars/osds.yml external_ceph is false
+#  template:
+#    src: ceph-ansible/group_vars/osds.collocation.yml
+#    dest: /root/ceph-ansible/group_vars/osds.yml
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no
+#  when: not external_ceph | bool
 
 # ansible all -m ping -i inventory
 # ansible-playbook site.yml -i inventory
