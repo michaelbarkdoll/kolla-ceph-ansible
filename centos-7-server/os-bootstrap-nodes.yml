@@ -8,9 +8,9 @@
       include_role:
         name: openstackprep
         tasks_from: main
-      vars:
-        external_ceph: False
-        kolla_ansible_source: True
+      #vars:
+      #  external_ceph: False
+      #  kolla_ansible_source: True
 
 # vagrant up
 # vagrant provision --provision-with ansible-ceph-deploy

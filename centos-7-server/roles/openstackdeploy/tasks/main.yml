@@ -1,6 +1,7 @@
 - include: packages.yml
 - include: virtualenv.yml
 
+# Copy /root/multinode from templates
 - include: install-inventory.yml
 
 - name: Install kolla-ansible from github
@@ -12,16 +13,37 @@
   when: not kolla_ansible_source | bool
 
 
-#- name: Configure /etc/kolla/globals.yml 
+# Configure /etc/kolla/globals.yml
+- name: Configure /etc/kolla/globals.yml with external_ceph
+  include: deployment.yml
+  when: external_ceph | bool
 
-# Configure globals.yml
-# With external ceph
-#- include: deployment.yml
-- include: deployment-no-ext-ceph.yml
+- name: Configure /etc/kolla/globals.yml without external_ceph
+  include: deployment-no-ext-ceph.yml
+  when: not external_ceph | bool
 
 # Bootstrap, start registry, genpwd, prechecks, deploy
-- include: deploy-kolla-ansible-git.yml
+#- include: deploy-kolla-ansible-git.yml
 #- include: deploy-kolla-ansible-pip.yml
+
+# Bootstrap, start registry, genpwd, prechecks, deploy
+- name: Deploy kolla_ansible with git when kolla_ansible_source is True
+  include: deploy-kolla-ansible-git.yml
+  when: kolla_ansible_source | bool
+
+- name: Deploy kolla_ansible with pip when kolla_ansible_source is False
+  include: deploy-kolla-ansible-pip.yml
+  when: not kolla_ansible_source | bool
+
+
+
+
+
+
+
+
+
+
 
 #- name: kolla-ansible bootstrap-servers inside /root/project/virtualenv
 #  command: "/root/project/virtualenv/exec kolla-ansible -i /root/multinode bootstrap-servers"
