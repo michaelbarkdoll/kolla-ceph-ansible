@@ -1,6 +1,26 @@
 ---
 
 
+# External Ceph notes:
+
+## kolla-ansible won't be deploying ceph
+# enable_ceph: "no"
+
+## By default enable_ceph the following individual services use ceph
+## when enable_ceph is set to "yes".  Those flags now need to be activated
+## in order to activate external Ceph integration.
+## This can be done individually per service in /etc/kolla/globals.yml
+# glance_backend_ceph: "yes"
+# cinder_backend_ceph: "yes"
+# nova_backend_ceph: "yes"
+# gnocchi_backend_storage: "ceph"
+# enable_manila_backend_cephfs_native: "yes"
+
+
+
+########################################################
+
+
 # For Deployment
 #- name: Install kolla-ansible inside /root/project/virtualenv
 #  command: "/root/project/virtualenv/exec pip install kolla-ansible"
@@ -14,33 +34,33 @@
 #    version: 8.0.0.0rc1
 #    #state: latest
 
-- name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
-  copy:
-    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/globals.yml
-    dest: /etc/kolla/globals.yml
-    remote_src: yes
-    force: no
+#- name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
+#  copy:
+#    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/globals.yml
+#    dest: /etc/kolla/globals.yml
+#    remote_src: yes
+#    force: no
+#
+#- name: Copy a kolla-ansible's passwords.yml file on the remote machine to /etc/kolla/passwords.yml
+#  copy:
+#    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/passwords.yml
+#    dest: /etc/kolla/passwords.yml
+#    remote_src: yes
+#    force: no
 
-- name: Copy a kolla-ansible's passwords.yml file on the remote machine to /etc/kolla/passwords.yml
-  copy:
-    src: /root/project/virtualenv/share/kolla-ansible/etc_examples/kolla/passwords.yml
-    dest: /etc/kolla/passwords.yml
-    remote_src: yes
-    force: no
+#- name: Copy a kolla-ansible's all-in-one inventory file on the remote machine to /root/all-in-one
+#  copy:
+#    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/all-in-one
+#    dest: /root/all-in-one
+#    remote_src: yes
+#    force: no
 
-- name: Copy a kolla-ansible's all-in-one inventory file on the remote machine to /root/all-in-one
-  copy:
-    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/all-in-one
-    dest: /root/all-in-one
-    remote_src: yes
-    force: no
-
-- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode
-  copy:
-    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/multinode
-    dest: /root/multinode.orig
-    remote_src: yes
-    force: no
+#- name: Copy a kolla-ansible's multinode inventory file on the remote machine to /root/mutinode
+#  copy:
+#    src: /root/project/virtualenv/share/kolla-ansible/ansible/inventory/multinode
+#    dest: /root/multinode.orig
+#    remote_src: yes
+#    force: no
 
 - name: Ensure kolla_base_distro is centos in /etc/kolla/globals.yml
   lineinfile:
@@ -75,7 +95,7 @@
     path: /etc/kolla/globals.yml
     regexp: '^docker_registry: '
     insertafter: '^#docker_registry: "172.16.0.10:4000"'
-    line: 'docker_registry: 10.100.194.21:5000'
+    line: 'docker_registry: 10.100.194.21:4000'
 
 - name: Ensure network_interface is eth1 (10.100.194.21/21) in /etc/kolla/globals.yml
   lineinfile:
@@ -105,19 +125,21 @@
     insertafter: '^#enable_cinder: "no"'
     line: 'enable_cinder: "yes"'
 
-- name: Ensure enable_ceph is yes in /etc/kolla/globals.yml
+- name: Ensure enable_ceph is no in /etc/kolla/globals.yml
   lineinfile:
     path: /etc/kolla/globals.yml
     regexp: '^enable_ceph: '
     insertafter: '^#enable_ceph: "no"'
-    line: 'enable_ceph: "yes"'
+    #line: 'enable_ceph: "yes"'
+    line: 'enable_ceph: "no"'
 
-- name: Ensure enable_ceph_rgw is yes in /etc/kolla/globals.yml
-  lineinfile:
-    path: /etc/kolla/globals.yml
-    regexp: '^enable_ceph_rgw: '
-    insertafter: '^#enable_ceph_rgw: "no"'
-    line: 'enable_ceph_rgw: "yes"'
+# Skip for now...
+#- name: Ensure enable_ceph_rgw is yes in /etc/kolla/globals.yml
+#  lineinfile:
+#    path: /etc/kolla/globals.yml
+#    regexp: '^enable_ceph_rgw: '
+#    insertafter: '^#enable_ceph_rgw: "no"'
+#    line: 'enable_ceph_rgw: "yes"'
 
 - name: Ensure glance_backend_file is no in /etc/kolla/globals.yml
   lineinfile:
@@ -132,3 +154,34 @@
     regexp: '^glance_backend_ceph: '
     insertafter: '^#glance_backend_ceph: "no"'
     line: 'glance_backend_ceph: "yes"'
+
+- name: Ensure cinder_backend_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^cinder_backend_ceph: '
+    insertafter: '^#cinder_backend_ceph: "{{ enable_ceph }}"'
+    line: 'cinder_backend_ceph: "yes"'
+
+- name: Ensure nova_backend_ceph is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^nova_backend_ceph: '
+    insertafter: '^#nova_backend_ceph: "{{ enable_ceph }}"'
+    line: 'nova_backend_ceph: "yes"'
+
+- name: Ensure gnocchi_backend_storage is ceph in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^gnocchi_backend_storage: '
+    #insertafter: '^#gnocchi_backend_storage: "{{ \'ceph\' if enable_ceph|bool else \'file\' }}"'
+    #insertafter: "^#gnocchi_backend_storage: "{{ 'ceph' if enable_ceph|bool else 'file' }""
+    insertafter: '^#gnocchi_backend_storage: '
+    line: 'gnocchi_backend_storage: "ceph"'
+
+# Only the following might be optional...
+- name: Ensure enable_manila_backend_cephfs_native is yes in /etc/kolla/globals.yml
+  lineinfile:
+    path: /etc/kolla/globals.yml
+    regexp: '^enable_manila_backend_cephfs_native: '
+    insertafter: '^#enable_manila_backend_cephfs_native: "no"'
+    line: 'enable_manila_backend_cephfs_native: "yes"'

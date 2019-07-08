@@ -29,7 +29,8 @@
     regexp: '^#\s*host_key_checking.*$'
     line: 'host_key_checking = False'
 
-- pip:
+- name: Install pip requirements /root/ceph-ansible/requirements.txt
+  pip:
     requirements: /root/ceph-ansible/requirements.txt
 
 #- name: Install python-netaddr

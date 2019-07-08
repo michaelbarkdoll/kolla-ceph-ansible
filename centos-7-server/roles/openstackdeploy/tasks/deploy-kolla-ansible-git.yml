@@ -11,5 +11,11 @@
   command: "/root/project/virtualenv/exec /root/kolla-ansible/tools/kolla-ansible -i /root/multinode prechecks"
 - name: kolla-ansible pull inside /root/project/virtualenv
   command: "/root/project/virtualenv/exec /root/kolla-ansible/tools/kolla-ansible -i /root/multinode pull"
+
+# Pause for 5 minutes to build app cache.
+- pause:
+    minutes: 5
+
+# The following line is erroring out, but seems to work when run manaully.
 - name: kolla-ansible deploy inside /root/project/virtualenv
   command: "/root/project/virtualenv/exec /root/kolla-ansible/tools/kolla-ansible -i /root/multinode deploy"

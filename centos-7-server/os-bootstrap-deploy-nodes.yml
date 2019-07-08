@@ -1,7 +1,7 @@
 ---
 
 - hosts: osdeploy
-  strategy: free
+  #strategy: free
   become: true
   tasks:
     - name: Setup openstackdeploy role

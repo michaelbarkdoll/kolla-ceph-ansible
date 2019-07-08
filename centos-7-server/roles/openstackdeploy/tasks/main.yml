@@ -4,6 +4,7 @@
 # Copy /root/multinode from templates
 - include: install-inventory.yml
 
+# Will also copy over the orig /etc/kolla/globals.yml and passwords.yml
 - name: Install kolla-ansible from github
   include: kolla-ansible-git.yml
   when: kolla_ansible_source | bool
@@ -11,7 +12,6 @@
 - name: Install kolla-ansible from pip
   include: kolla-ansible-pip.yml
   when: not kolla_ansible_source | bool
-
 
 # Configure /etc/kolla/globals.yml
 - name: Configure /etc/kolla/globals.yml with external_ceph

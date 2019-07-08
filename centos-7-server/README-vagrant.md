@@ -28,16 +28,26 @@ ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
 # Multinode no external ceph 5 node deployment
 Note: 
 os-bootstrap-nodes.yml variables are never used (removed)
+ceph-bootstrap-nodes.yml
+        external_ceph: False
 os-bootstrap-deploy-nodes.yml
         external_ceph: False
         kolla_ansible_source: True
-ceph-bootstrap-nodes.yml
-        external_ceph: False
 ```
 vagrant up && ansible-playbook -i staging bootstrap-nodes.yml && ansible-playbook -i staging ceph-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
 ```
 
-ansible-playbook -i staging ceph-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
+# Multinode with external ceph 5 node deployment
+Note: 
+os-bootstrap-nodes.yml variables are never used (removed)
+ceph-bootstrap-nodes.yml
+        external_ceph: True
+os-bootstrap-deploy-nodes.yml
+        external_ceph: True
+        kolla_ansible_source: True
+```
+vagrant up && ansible-playbook -i staging bootstrap-nodes.yml && ansible-playbook -i staging ceph-bootstrap-nodes.yml && ansible-playbook -i staging ceph-deploy-playbook.yml && ansible-playbook -i staging os-bootstrap-nodes.yml && ansible-playbook -i staging os-bootstrap-deploy-nodes.yml
+```
 
 ```
 vagrant up && vagrant provision --provision-with ansible-ceph-prep && vagrant provision --provision-with ansible
