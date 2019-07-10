@@ -11,7 +11,6 @@
 #cephgroup
 
 [cephdeploy]
-#test ansible_user=vagrant
 node1 ansible_user=vagrant nic1=10.100.194.21
 
 [osgroup]

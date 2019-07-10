@@ -9,7 +9,7 @@
         name: openstackdeploy
         tasks_from: main
       vars:
-        external_ceph: False
+        external_ceph: True
         kolla_ansible_source: True
 
 # vagrant up

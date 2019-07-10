@@ -1,0 +1,2 @@
+[client.glance]
+key = {{ client_glance_keyring }}

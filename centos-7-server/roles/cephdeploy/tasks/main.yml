@@ -6,4 +6,4 @@
 #- include: skip_install-ssh-keys.yml
 
 # You'll need to modify files in the following file prior to physical deployment
-- include: deploy.yml
+#- include: deploy.yml

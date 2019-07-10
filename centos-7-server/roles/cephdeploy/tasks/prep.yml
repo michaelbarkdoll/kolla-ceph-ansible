@@ -29,16 +29,10 @@
     regexp: '^#\s*host_key_checking.*$'
     line: 'host_key_checking = False'
 
+# Install notario, netaddr and ansible
 - name: Install pip requirements /root/ceph-ansible/requirements.txt
   pip:
     requirements: /root/ceph-ansible/requirements.txt
-
-#- name: Install python-netaddr
-#  package: name=python-netaddr state=present
-
-# pip:
-#   name: notario
-
 
 # This template must be modified according to ceph nodes
 - name: Copy ansible inventory

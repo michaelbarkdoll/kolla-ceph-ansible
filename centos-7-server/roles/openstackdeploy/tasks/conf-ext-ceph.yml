@@ -1,2 +1,338 @@
 ---
 
+# 8234
+
+# First obtain the fsid and register it as a variable
+
+- name: Register ceph fsid
+  shell: set -- */; printf "%s\n" "${@%/}"
+  register: ceph_fsid
+  args:
+    chdir: /root/ceph-ansible-keys
+
+- name: Set fact for fsid
+  set_fact:
+    fact_ceph_fsid: "{{ ceph_fsid.stdout }}"
+
+##############################################################
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config/glance
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config/cinder
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config/cinder-backup
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config/cinder-volume
+    state: directory
+    mode: '0755'
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/kolla/config/nova
+    state: directory
+    mode: '0755'
+
+#- name: Create a directory if it does not exist
+#  file:
+#    path: /etc/kolla/config/gnocchi
+#    state: directory
+#    mode: '0755'
+
+#############################################################
+
+# Copy over master ceph.conf
+- name: Copy template ceph.conf.j2 to /etc/kolla/config/cinder/ceph.conf
+  template:
+    src: etc/kolla/config/cinder/ceph.conf.j2
+    dest: /etc/kolla/config/cinder/ceph.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Copy /etc/kolla/config/cinder/ceph.conf to glance/ceph.conf
+  copy:
+    src: /etc/kolla/config/cinder/ceph.conf
+    dest: /etc/kolla/config/glance/ceph.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+    remote_src: yes
+
+- name: Copy /etc/kolla/config/cinder/ceph.conf to nova/ceph.conf
+  copy:
+    src: /etc/kolla/config/cinder/ceph.conf
+    dest: /etc/kolla/config/nova/ceph.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+    remote_src: yes
+
+#####################################################
+
+
+
+
+
+
+#http://docs.ceph.com/docs/master/rbd/rbd-openstack/
+
+#ceph osd pool create volumes 128
+#ceph osd pool create images 128
+#ceph osd pool create backups 128
+#ceph osd pool create vms 128
+
+- name: Create volumes pool, used to save Cinder
+  shell: ssh node3 "ceph osd pool create volumes 4"
+  #register: ceph_fsid
+
+- name: Create images pool, used to save Glance images
+  shell: ssh node3 "ceph osd pool create images 4"
+  #register: ceph_fsid
+
+- name: Create backups pool, used to save Cinder
+  shell: ssh node3 "ceph osd pool create backups 4"
+  #register: ceph_fsid
+
+- name: Create vms pool, used to save vm system volumes
+  shell: ssh node3 "ceph osd pool create vms 4"
+  #register: ceph_fsid
+
+#rbd pool init volumes
+#rbd pool init images
+#rbd pool init backups
+#rbd pool init vms
+
+
+- name: Init volumes pool, used to save Cinder
+  shell: ssh node3 "rbd pool init volumes"
+  #register: ceph_fsid
+
+- name: Init images pool, used to save Glance images
+  shell: ssh node3 "rbd pool init images"
+  #register: ceph_fsid
+
+- name: Init backups pool, used to save Cinder
+  shell: ssh node3 "rbd pool init backups"
+  #register: ceph_fsid
+
+- name: Init vms pool, used to save vm system volumes
+  shell: ssh node3 "rbd pool init vms"
+  #register: ceph_fsid
+
+# profile rbd
+#Gives a user permissions to manipulate RBD images. 
+#When used as a Monitor cap, it provides the minimal privileges required
+#by an RBD client application. When used as an OSD cap, it provides 
+#read-write access to an RBD client application.
+
+#create a new user for Nova/Cinder and Glance. Execute the following:
+###ceph auth get-or-create client.glance mon 'profile rbd' osd 'profile rbd pool=images'
+###ceph auth get-or-create client.cinder mon 'profile rbd' osd 'profile rbd pool=volumes, profile rbd pool=vms, profile rbd-read-only pool=images'
+###ceph auth get-or-create client.cinder-backup mon 'profile rbd' osd 'profile rbd pool=backups'
+###
+###
+###ceph auth get-or-create client.glance
+###ceph auth get-or-create client.cinder-volume
+###ceph auth get-or-create client.cinder-backup
+###
+###ceph auth caps client.glance mon 'allow r' osd 'allow rwx pool=images'
+###ceph auth caps client.cinder-volume mon 'allow r' osd 'allow rwx pool=volumes'
+###ceph auth caps client.cinder-backup mon 'allow r' osd 'allow rwx pool=volumes, allow rwx pool=backups'
+###
+###ceph auth get-or-create client.nova
+###
+###ceph auth caps client.nova mon 'allow r' osd 'allow rwx pool=vms'
+#ceph auth get client.nova -o /opt/ceph/deploy/ceph.client.nova.keyring
+
+#enable_cinder: "yes"
+#
+#glance_backend_ceph: "yes"
+#cinder_backend_ceph: "yes"
+#nova_backend_ceph: "yes"
+
+- name: Create new user for glance
+  shell: ssh node3 "ceph auth get-or-create client.glance mon 'profile rbd' osd 'profile rbd pool=images'"
+  #register: sample
+
+- name: Create new user for cinder
+  shell: ssh node3 "ceph auth get-or-create client.cinder mon 'profile rbd' osd 'profile rbd pool=volumes, profile rbd pool=vms, profile rbd-read-only pool=images'"
+  #register: sample
+
+- name: Create new user for cinder-volume
+  shell: ssh node3 "ceph auth get-or-create client.cinder-volume mon 'profile rbd' osd 'profile rbd pool=volumes'"
+  #register: sample
+
+- name: Create new user for cinder-backup
+  shell: ssh node3 "ceph auth get-or-create client.cinder-backup mon 'profile rbd' osd 'profile rbd pool=backups'"
+  #register: sample
+
+- name: Create new user for nova
+  shell: ssh node3 "ceph auth get-or-create client.nova mon 'profile rbd' osd 'profile rbd pool=vms'"
+  #register: sample
+
+
+#####################################################
+
+- name: Get keyring file of the user glance
+  shell: ssh node3 "ceph auth get client.glance"
+  register: ceph_client_glance
+
+- name: Set fact for fact_ceph_client_glance
+  set_fact:
+    fact_ceph_client_glance: "{{ ceph_client_glance.stdout }}"
+
+- name: Get keyring file of the user cinder
+  shell: ssh node3 "ceph auth get client.cinder"
+  register: ceph_client_cinder
+
+- name: Set fact for fact_ceph_client_cinder
+  set_fact:
+    fact_ceph_client_cinder: "{{ ceph_client_cinder.stdout }}"
+
+- name: Get keyring file of the user cinder-volume
+  shell: ssh node3 "ceph auth get client.cinder-volume"
+  register: ceph_client_cinder_volume
+
+- name: Set fact for fact_ceph_client_cinder_volume
+  set_fact:
+    fact_ceph_client_cinder_volume: "{{ ceph_client_cinder_volume.stdout }}"
+
+- name: Get keyring file of the user cinder-backup
+  shell: ssh node3 "ceph auth get client.cinder-backup"
+  register: ceph_client_cinder_backup
+
+- name: Set fact for fact_ceph_client_cinder_backup
+  set_fact:
+    fact_ceph_client_cinder_backup: "{{ ceph_client_cinder_backup.stdout }}"
+
+- name: Get keyring file of the nova user
+  shell: ssh node3 "ceph auth get client.nova"
+  register: ceph_client_nova
+
+- name: Set fact for fact_ceph_client_nova
+  set_fact:
+    fact_ceph_client_nova: "{{ ceph_client_nova.stdout }}"
+
+#####################################################
+
+- name: Copy glance keyring to /etc/kolla/config/glance/ceph.client.glance.keyring
+  copy: 
+    content: "{{ fact_ceph_client_glance }}" 
+    dest: /etc/kolla/config/glance/ceph.client.glance.keyring
+
+
+#####################################################
+
+#cinder-volume using cinder keyring instead
+- name: Copy cinder keyring to /etc/kolla/config/cinder-volume/ceph.client.cinder.keyring
+  copy: 
+    content: "{{ fact_ceph_client_cinder }}" 
+    dest: /etc/kolla/config/cinder-volume/ceph.client.cinder.keyring
+
+#cinder-volume using cinder keyring instead
+- name: Copy cinder-backup keyring to /etc/kolla/config/cinder-backup/ceph.client.cinder.keyring
+  copy: 
+    content: "{{ fact_ceph_client_cinder }}" 
+    dest: /etc/kolla/config/cinder-backup/ceph.client.cinder.keyring
+#- name: Copy cinder keyring to /etc/kolla/config/cinder-backup/ceph.client.cinder-volume.keyring
+#  copy: 
+#    content: "{{ ceph_client_cinder }}" 
+#    dest: /etc/kolla/config/cinder-backup/ceph.client.cinder-volume.keyring
+
+- name: Copy cinder-backup keyring to /etc/kolla/config/cinder-backup/ceph.client.cinder-backup.keyring
+  copy: 
+    content: "{{ fact_ceph_client_cinder_backup }}" 
+    dest: /etc/kolla/config/cinder-backup/ceph.client.cinder-backup.keyring
+
+#####################################################
+
+# nova needs cinder-volume
+- name: Copy nova keyring to file /etc/kolla/config/nova/ceph.client.cinder.keyring
+  copy: 
+    content: "{{ fact_ceph_client_nova }}" 
+    dest: /etc/kolla/config/nova/ceph.client.nova.keyring
+
+#####################################################
+
+
+######################################################
+
+# Copy basic glance-api.conf
+- name: Copy /etc/kolla/config/glance/glance-api.conf
+  copy:
+    src: etc/kolla/config/glance/glance-api.conf
+    dest: /etc/kolla/config/glance/glance-api.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+
+# Copy basic cinder-volume.conf
+- name: Copy /etc/kolla/config/cinder/cinder-volume.conf
+  copy:
+    src: etc/kolla/config/cinder/cinder-volume.conf
+    dest: /etc/kolla/config/cinder/cinder-volume.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+# Copy basic cinder-backup.conf
+- name: Copy /etc/kolla/config/cinder/cinder-backup.conf
+  copy:
+    src: etc/kolla/config/cinder/cinder-backup.conf
+    dest: /etc/kolla/config/cinder/cinder-backup.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+# Copy basic nova-compute.conf
+- name: Copy /etc/kolla/config/nova/nova-compute.conf
+  copy:
+    src: etc/kolla/config/nova/nova-compute.conf
+    dest: /etc/kolla/config/nova/nova-compute.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+## Copy basic gnocchi.conf
+#- name: Copy /etc/kolla/config/gnocchi.conf
+#  template:
+#    src: etc/kolla/config/gnocchi.conf
+#    dest: /etc/kolla/config/gnocchi.conf
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no

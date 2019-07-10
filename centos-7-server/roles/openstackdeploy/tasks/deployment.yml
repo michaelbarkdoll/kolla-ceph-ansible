@@ -13,8 +13,10 @@
 # glance_backend_ceph: "yes"
 # cinder_backend_ceph: "yes"
 # nova_backend_ceph: "yes"
-# gnocchi_backend_storage: "ceph"
-# enable_manila_backend_cephfs_native: "yes"
+# gnocchi_backend_storage: "ceph" # Optionally, all options are optional
+# enable_manila_backend_cephfs_native: "yes" # Optionally, all options are optional
+
+# minimum need: nova and glance
 
 
 
@@ -159,29 +161,32 @@
   lineinfile:
     path: /etc/kolla/globals.yml
     regexp: '^cinder_backend_ceph: '
-    insertafter: '^#cinder_backend_ceph: "{{ enable_ceph }}"'
+    insertafter: '^#cinder_backend_ceph: "'
+    #insertafter: '^#cinder_backend_ceph: "{{ enable_ceph }}"'
     line: 'cinder_backend_ceph: "yes"'
 
 - name: Ensure nova_backend_ceph is yes in /etc/kolla/globals.yml
   lineinfile:
     path: /etc/kolla/globals.yml
     regexp: '^nova_backend_ceph: '
-    insertafter: '^#nova_backend_ceph: "{{ enable_ceph }}"'
+    insertafter: '^#nova_backend_ceph: '
+    #insertafter: '^#nova_backend_ceph: "{{ enable_ceph }}"'
     line: 'nova_backend_ceph: "yes"'
 
-- name: Ensure gnocchi_backend_storage is ceph in /etc/kolla/globals.yml
-  lineinfile:
-    path: /etc/kolla/globals.yml
-    regexp: '^gnocchi_backend_storage: '
-    #insertafter: '^#gnocchi_backend_storage: "{{ \'ceph\' if enable_ceph|bool else \'file\' }}"'
-    #insertafter: "^#gnocchi_backend_storage: "{{ 'ceph' if enable_ceph|bool else 'file' }""
-    insertafter: '^#gnocchi_backend_storage: '
-    line: 'gnocchi_backend_storage: "ceph"'
+###- name: Ensure gnocchi_backend_storage is ceph in /etc/kolla/globals.yml
+###  lineinfile:
+###    path: /etc/kolla/globals.yml
+###    regexp: '^gnocchi_backend_storage: '
+###    #insertafter: '^#gnocchi_backend_storage: "{{ \'ceph\' if enable_ceph|bool else \'file\' }}"'
+###    #insertafter: "^#gnocchi_backend_storage: "{{ 'ceph' if enable_ceph|bool else 'file' }""
+###    insertafter: '^#gnocchi_backend_storage: '
+###    line: 'gnocchi_backend_storage: "ceph"'
 
-# Only the following might be optional...
-- name: Ensure enable_manila_backend_cephfs_native is yes in /etc/kolla/globals.yml
-  lineinfile:
-    path: /etc/kolla/globals.yml
-    regexp: '^enable_manila_backend_cephfs_native: '
-    insertafter: '^#enable_manila_backend_cephfs_native: "no"'
-    line: 'enable_manila_backend_cephfs_native: "yes"'
+###- name: Ensure enable_manila_backend_cephfs_native is yes in /etc/kolla/globals.yml
+###  lineinfile:
+###    path: /etc/kolla/globals.yml
+###    regexp: '^enable_manila_backend_cephfs_native: '
+###    insertafter: '^#enable_manila_backend_cephfs_native: "no"'
+###    line: 'enable_manila_backend_cephfs_native: "yes"'
+
+- include: conf-ext-ceph.yml

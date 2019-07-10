@@ -1,0 +1,7 @@
+[global]
+fsid = {{ fact_ceph_fsid }}
+mon_initial_members = node3, node4, node5
+mon_host = 10.100.194.23,10.100.194.24,10.100.194.25
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx

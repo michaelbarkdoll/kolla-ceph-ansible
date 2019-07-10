@@ -1,16 +1,16 @@
 ---
 
-- hosts: osgroup
-  #strategy: free
+- hosts: cephgroup
+  strategy: free
   become: true
   tasks:
-    - name: Bootstrap with openstackprep role
+    - name: Setup cephprep role
       include_role:
-        name: openstackprep
+        name: cephprep
         tasks_from: main
-      #vars:
-      #  external_ceph: False
-      #  kolla_ansible_source: True
+      vars:
+        external_ceph: False
+        #kolla_ansible_source: True
 
 # vagrant up
 # vagrant provision --provision-with ansible-ceph-deploy
