@@ -33,10 +33,15 @@ public_network: "10.100.192.0/21"
 # Simply specify the cluster network ip range with variable:
 # cluster_network: "x.x.x.x/X"
 
-dashboard_enabled: True
-dashboard_port: 8234
-dashboard_admin_user: admin
-dashboard_admin_password: admin
+##### Here we currently disable dashboard from ceph-mgr since it installs
+##### a conflicting package for docker than what kolla-ansible's bootstrap installs
+#####
+#####dashboard_enabled: True
+#####dashboard_port: 8234
+#####dashboard_admin_user: admin
+#####dashboard_admin_password: admin
+
+
 # We only need this for SSL (https) connections
 #dashboard_crt: ''
 #dashboard_key: ''

@@ -111,19 +111,19 @@
 #ceph osd pool create vms 128
 
 - name: Create volumes pool, used to save Cinder
-  shell: ssh node3 "ceph osd pool create volumes 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create volumes 4"
   #register: ceph_fsid
 
 - name: Create images pool, used to save Glance images
-  shell: ssh node3 "ceph osd pool create images 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create images 4"
   #register: ceph_fsid
 
 - name: Create backups pool, used to save Cinder
-  shell: ssh node3 "ceph osd pool create backups 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create backups 4"
   #register: ceph_fsid
 
 - name: Create vms pool, used to save vm system volumes
-  shell: ssh node3 "ceph osd pool create vms 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create vms 4"
   #register: ceph_fsid
 
 #rbd pool init volumes
@@ -133,19 +133,19 @@
 
 
 - name: Init volumes pool, used to save Cinder
-  shell: ssh node3 "rbd pool init volumes"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "rbd pool init volumes"
   #register: ceph_fsid
 
 - name: Init images pool, used to save Glance images
-  shell: ssh node3 "rbd pool init images"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "rbd pool init images"
   #register: ceph_fsid
 
 - name: Init backups pool, used to save Cinder
-  shell: ssh node3 "rbd pool init backups"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "rbd pool init backups"
   #register: ceph_fsid
 
 - name: Init vms pool, used to save vm system volumes
-  shell: ssh node3 "rbd pool init vms"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "rbd pool init vms"
   #register: ceph_fsid
 
 # profile rbd
@@ -180,30 +180,30 @@
 #nova_backend_ceph: "yes"
 
 - name: Create new user for glance
-  shell: ssh node3 "ceph auth get-or-create client.glance mon 'profile rbd' osd 'profile rbd pool=images'"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get-or-create client.glance mon 'profile rbd' osd 'profile rbd pool=images'"
   #register: sample
 
 - name: Create new user for cinder
-  shell: ssh node3 "ceph auth get-or-create client.cinder mon 'profile rbd' osd 'profile rbd pool=volumes, profile rbd pool=vms, profile rbd-read-only pool=images'"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get-or-create client.cinder mon 'profile rbd' osd 'profile rbd pool=volumes, profile rbd pool=vms, profile rbd-read-only pool=images'"
   #register: sample
 
 - name: Create new user for cinder-volume
-  shell: ssh node3 "ceph auth get-or-create client.cinder-volume mon 'profile rbd' osd 'profile rbd pool=volumes'"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get-or-create client.cinder-volume mon 'profile rbd' osd 'profile rbd pool=volumes'"
   #register: sample
 
 - name: Create new user for cinder-backup
-  shell: ssh node3 "ceph auth get-or-create client.cinder-backup mon 'profile rbd' osd 'profile rbd pool=backups'"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get-or-create client.cinder-backup mon 'profile rbd' osd 'profile rbd pool=backups'"
   #register: sample
 
 - name: Create new user for nova
-  shell: ssh node3 "ceph auth get-or-create client.nova mon 'profile rbd' osd 'profile rbd pool=vms'"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get-or-create client.nova mon 'profile rbd' osd 'profile rbd pool=vms'"
   #register: sample
 
 
 #####################################################
 
 - name: Get keyring file of the user glance
-  shell: ssh node3 "ceph auth get client.glance"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get client.glance"
   register: ceph_client_glance
 
 - name: Set fact for fact_ceph_client_glance
@@ -211,7 +211,7 @@
     fact_ceph_client_glance: "{{ ceph_client_glance.stdout }}"
 
 - name: Get keyring file of the user cinder
-  shell: ssh node3 "ceph auth get client.cinder"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get client.cinder"
   register: ceph_client_cinder
 
 - name: Set fact for fact_ceph_client_cinder
@@ -219,7 +219,7 @@
     fact_ceph_client_cinder: "{{ ceph_client_cinder.stdout }}"
 
 - name: Get keyring file of the user cinder-volume
-  shell: ssh node3 "ceph auth get client.cinder-volume"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get client.cinder-volume"
   register: ceph_client_cinder_volume
 
 - name: Set fact for fact_ceph_client_cinder_volume
@@ -227,7 +227,7 @@
     fact_ceph_client_cinder_volume: "{{ ceph_client_cinder_volume.stdout }}"
 
 - name: Get keyring file of the user cinder-backup
-  shell: ssh node3 "ceph auth get client.cinder-backup"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get client.cinder-backup"
   register: ceph_client_cinder_backup
 
 - name: Set fact for fact_ceph_client_cinder_backup
@@ -235,7 +235,7 @@
     fact_ceph_client_cinder_backup: "{{ ceph_client_cinder_backup.stdout }}"
 
 - name: Get keyring file of the nova user
-  shell: ssh node3 "ceph auth get client.nova"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph auth get client.nova"
   register: ceph_client_nova
 
 - name: Set fact for fact_ceph_client_nova
@@ -280,6 +280,13 @@
   copy: 
     content: "{{ fact_ceph_client_nova }}" 
     dest: /etc/kolla/config/nova/ceph.client.nova.keyring
+
+# nova needs cinder-volume
+- name: Copy nova keyring to file /etc/kolla/config/nova/ceph.client.cinder.keyring
+  copy: 
+    content: "{{ fact_ceph_client_cinder }}" 
+    dest: /etc/kolla/config/nova/ceph.client.cinder.keyring
+
 
 #####################################################
 
