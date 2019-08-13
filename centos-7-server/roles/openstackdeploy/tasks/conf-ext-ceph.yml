@@ -110,20 +110,31 @@
 #ceph osd pool create backups 128
 #ceph osd pool create vms 128
 
+
+#backups	18	0.2374670185
+#volumes	42.8	0.5646437995
+#vms	10	0.1319261214
+#images	5	0.0659630607
+
+
 - name: Create volumes pool, used to save Cinder
-  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create volumes 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create volumes 64"
+  #shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create volumes 4"
   #register: ceph_fsid
 
 - name: Create images pool, used to save Glance images
-  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create images 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create images 8"
+  #shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create images 4"
   #register: ceph_fsid
 
 - name: Create backups pool, used to save Cinder
-  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create backups 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create backups 32"
+  #shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create backups 4"
   #register: ceph_fsid
 
 - name: Create vms pool, used to save vm system volumes
-  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create vms 4"
+  shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create vms 16"
+  #shell: ssh -o "StrictHostKeyChecking=no" node3 "ceph osd pool create vms 4"
   #register: ceph_fsid
 
 #rbd pool init volumes

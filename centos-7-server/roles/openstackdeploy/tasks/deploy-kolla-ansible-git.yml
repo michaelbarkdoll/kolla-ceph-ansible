@@ -16,6 +16,12 @@
 - pause:
     minutes: 5
 
-# The following line is erroring out, but seems to work when run manaully.
 - name: kolla-ansible deploy inside /root/project/virtualenv
   command: "/root/project/virtualenv/exec /root/kolla-ansible/tools/kolla-ansible -i /root/multinode deploy"
+
+- name: kolla-ansible post-deploy inside /root/project/virtualenv
+  command: "/root/project/virtualenv/exec /root/kolla-ansible/tools/kolla-ansible post-deploy"
+
+#pip install python-openstackclient python-glanceclient python-neutronclient
+# source /etc/kolla/admin-openrc.sh
+#. kolla-ansible/tools/init-runonce
