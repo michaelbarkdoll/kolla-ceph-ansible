@@ -12,7 +12,8 @@
     virtualenv: /root/project/virtualenv
     virtualenv_command: virtualenv
     virtualenv_site_packages: no
-    version: 8.0.0.0rc1
+    version: 8.0.0
+    #version: 8.0.0.0rc1
     #state: latest
 
 - name: Copy a kolla-ansible's globals.yml file on the remote machine to /etc/kolla/globals.yml
